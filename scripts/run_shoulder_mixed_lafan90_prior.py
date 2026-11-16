@@ -16,7 +16,12 @@ from pathlib import Path
 from smp.data.shoulder_ik import atomic_json
 from smp.pretrain.conditioning import sha256
 from smp.pretrain.shoulder_mixed_lafan90 import (
-  NORM_SHA, PARENT_SHA, POLICY, SAMPLING, data_sha, prepare,
+  NORM_SHA,
+  PARENT_SHA,
+  POLICY,
+  SAMPLING,
+  data_sha,
+  prepare,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -125,6 +130,11 @@ def freeze_code(state):
     Path("src/smp/pretrain/shoulder_mixed_score.py"),
     Path("src/smp/pretrain/shoulder80_score.py"),
     Path("src/smp/rl/conditional_score.py"),
+    Path("src/smp/rl/events.py"),
+    Path("src/smp/rl/tasks/force_unloading/conditional_shoulder_mixed.py"),
+    Path("src/smp/sampling/feature_to_state.py"),
+    Path("src/smp/data/shoulder_ik.py"),
+    Path("tests/test_shoulder_mixed_lafan90.py"),
     Path("src/smp/pretrain/model.py"),
     Path("src/smp/pretrain/schema.py"),
     Path("src/smp/pretrain/conditioning.py"),
@@ -250,12 +260,31 @@ def train_stages(state, resume):
 
 
 def assess_stage(state):
-  child(state, "assessment", [sys.executable, "-u", "-m",
-        "scripts.assess_shoulder_mixed_lafan90", "--output", str(OUTPUT / "assessment")])
+  child(
+    state,
+    "assessment",
+    [
+      sys.executable,
+      "-u",
+      "-m",
+      "scripts.assess_shoulder_mixed_lafan90",
+      "--output",
+      str(OUTPUT / "assessment"),
+    ],
+  )
   report = json.loads((OUTPUT / "assessment/report.json").read_text())
-  save(state, assessment=report, status=("complete_assessment_passed"
-       if report["gate"]["passed"] else "complete_assessment_failed"),
-       finished_at_utc=now(), ppo_authorized=False, test_evaluated=False)
+  save(
+    state,
+    assessment=report,
+    status=(
+      "complete_assessment_passed"
+      if report["gate"]["passed"]
+      else "complete_assessment_failed"
+    ),
+    finished_at_utc=now(),
+    ppo_authorized=False,
+    test_evaluated=False,
+  )
 
 
 def journal(state):

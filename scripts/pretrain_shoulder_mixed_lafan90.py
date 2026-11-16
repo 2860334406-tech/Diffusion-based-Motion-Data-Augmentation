@@ -24,13 +24,17 @@ from smp.pretrain.scheduler import DDPMScheduler
 from smp.pretrain.shoulder_mixed import CONDITION_NAMES, CONDITION_SCHEMA
 from smp.pretrain.shoulder_mixed_lafan90 import (
   DATA_DIR,
+  EVALUATION_SAMPLING,
   NORM_SHA,
   PARENT_SHA,
   SAMPLING,
-  EVALUATION_SAMPLING,
-  Lafan90Dataset as ShoulderMixedDataset,
-  Lafan90Sampler as ShoulderMixedSampler,
   data_sha,
+)
+from smp.pretrain.shoulder_mixed_lafan90 import (
+  Lafan90Dataset as ShoulderMixedDataset,
+)
+from smp.pretrain.shoulder_mixed_lafan90 import (
+  Lafan90Sampler as ShoulderMixedSampler,
 )
 from smp.pretrain.shoulder_mixed_score import calibrate, evaluate_scores, paired_scores
 from smp.rl.conditional_score import (
@@ -510,8 +514,10 @@ def train(output: Path, *, smoke=False, resume=False):
           "grad_norm": float(grad),
           "optimizer_steps": steps,
           "elapsed_seconds": time.monotonic() - started,
-          **{f"stand_draws/{source}": count for source, count in
-             sampler.last_epoch_audit["observed"]["0"].items()},
+          **{
+            f"stand_draws/{source}": count
+            for source, count in sampler.last_epoch_audit["observed"]["0"].items()
+          },
         }
         print(json.dumps(metrics), flush=True)
         with (output / "metrics.jsonl").open("a") as stream:

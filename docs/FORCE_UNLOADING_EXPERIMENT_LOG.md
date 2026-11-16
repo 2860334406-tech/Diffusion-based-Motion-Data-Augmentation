@@ -708,3 +708,18 @@
 - 交叉推理复核：同一当前无接触任务、同一物理参数/PD/观测接口，冻结旧LAFAN static80 A3000 Actor及新A3000 Actor，各加载自身观测归一化，分别使用固定的旧LAFAN GSI与新条件stand GSI窗口。每组64env、seed42、2秒上限，只做Actor推理，不做PPO恢复/训练，不更改或迁移checkpoint。结果：旧Actor＋旧GSI为62/64存活至2秒（96.875%，截尾平均寿命1.940s）；旧Actor＋新GSI为4/64（6.25%，0.293s）；新Actor＋旧GSI为0/64（0.100s）；新Actor＋新GSI为0/64（0.468s）。四组推头力峰值均为0，无NaN/Inf。说明当前环境仍可执行旧站立策略；新初始化分布明显改变旧策略的可适应性，而新策略也未学到可用站立。旧策略在新初态失效不等于这些状态物理不可支撑，短程交叉也不能单独确定哪项训练变化导致失败。
 - 同时变化的训练因素：旧Prior为LAFAN static80无条件模型，新Prior为IK/个人/旧库三条件模型，stand每epoch抽样从80%变为20%；特征归一化由旧Prior统计变为混合训练集分位数及物理跨度下限；GSI由旧无条件采样变为新stand条件采样；SMP由策略轨迹在线均值归一化`exp(-6*normalized_error)`变为训练集冻结μ及waist加权的base。A阶段虽不启用肩部contrast，仍使用这个新的base，故站立学习也受评分改动影响。未做训练期单因素消融，不能把退化唯一归因于IK数据、GSI或固定校准。
 - 下一步建议与边界：先锁定已验证的LAFAN GSI及原PD/action/PPO配置，只改变SMP Prior/评分做独立A对照，并检查真实平衡轨迹上的base分布，再考虑改变数据或底层控制。新训练预算未启动。对照报告与图为`assessment/standing_diagnostic/old_new_comparison.json`和`old_new_comparison.png`，交叉推理原始结果为`old_new_cross_probe.json`，相邻保存脚本/日志与更新的SHA清单。
+
+
+## EXP-038：固定归一化的 LAFAN90 静止来源三条件 Prior
+
+- 时间与目的（UTC）：2026-11-16T07:23:20.297739+00:00。按用户批准的新配比，从零重训三条件 Prior，检验增加 LAFAN 静止来源后，静止采样平稳性与肩部 SMP 奖励排序是否改善。本轮只训练和评估 Prior，PPO 另行开展。
+- 固定数据：复用 EXP-036 原始窗口与完整视频划分，父 manifest SHA-256 `41c2b9f9c466f8a12d86cb812157958b83ccd990533f416d173aaa053b2902f0`；train/validation/test 为 85641/19483/18815 个窗口。个人 P01/P02 合格17条仍为14条训练、3条验证；P03仅保留，未用于选模或模型测试。IK v2、个人二次受约束重定向与旧库静止原始文件均不改写。
+- 归一化：用户选择固定 EXP-036 的 train-only 统计，SHA-256 `5f3900e1049ea683709c16badfd201db884739431e8814c79738ad4d9e529ee8`；逐字节引用，不重新计算或覆盖。新数据 manifest SHA-256 `99b4c8f253751c9757a59cec77a580085a32d53b4c13cb5ef37812820e3e911d`。
+- 采样：每 epoch 3360 个窗口，stand/left/right=672/1344/1344，比例在NULL丢弃前保证。静止类内部 LAFAN90%，IK/自采/G1 Moves/AMASS-G1各2.5%；LAFAN静止占全部抽样18%，总静止条件仍20%。五轮确定性来源轮转累计3024/84/84/84/84，保持每轮静止672；来源内保留原actor/clip/window层级。每侧肩部保持IK672＋个人672，IK保留11个幅度区间均衡，左右及NULL语义不变。
+- 训练：独立单 epoch smoke，正式模型重新初始化；seed42、d_model128、4heads、2layers、50 DDPM steps、10 noise samples、batch1024、AdamW lr3e-4/weight_decay1e-4/grad_clip1.0、10%条件丢弃、无EMA、guidance1。正式预算10000epochs/40000更新，每100epochs保存可恢复checkpoint，每1000epochs保留候选。Checkpoint包含模型、optimizer、完整RNG、采样epoch及5/11轮转状态、数据/归一化/代码身份。
+- Score与验证：训练校准视图采用新来源比例，每条件4096个训练样本重算μ；Score仍为R_base×R_contrast，waist yaw索引21权重10、t=(8,15,22)、64组配对噪声。验证集、静止负例抽样及验证权重沿用EXP-036，逐肩整体原门槛全部保留，避免替换验证分布制造改善。全部通过候选中按0.2stand＋0.4left＋0.4right验证损失选模；无通过候选时保留最低损失诊断模型，记录失败，不发布为已验收Prior。
+- 自动评估：训练结束后，新候选与旧4000/10000epoch模型各条件同初始噪声生成4096窗口，对比root速度、全关节/waist差分速度、姿态、方向和奖励分布，检查0.15m/s静止速度及安全GSI接受率50%门槛，输出三类8窗口FK慢放视频、分布图、CSV/JSON及overview.html；回放不冒充动力学或PPO结果。P03保持未模型测试。
+- GPU与存储：物理GPU0 UUID `GPU-eb0fc39f-6914-9e1d-65af-570524e8e061`，进程cuda:0；启动核对无其他计算进程。逻辑目录`logs/reproduction/g1_shoulder_mixed_lafan90_prior_v1/`，持久目录`/personal_fast_storage/smp_experiments/g1_shoulder_mixed_lafan90_prior_v1_20261116T072239Z`。W&B仅同步标量和配置，模型留本地；身份不一致、NaN/Inf、GPU/进程故障硬停止并保留恢复状态。
+- 预检：37项相关测试通过，Ruff通过；覆盖五轮精确比例、肩部幅度轮转、恢复采样/RNG/optimizer、冻结归一化/原始shard、原验证负例、NULL区分及GSI质量/故障分支。当前状态prepared，等待独立smoke后正式从零训练；W&B与实际进度由launch_report和驱动manifest补记。
+
+- EXP-038 实际启动确认（UTC 2026-11-16T07:26:41.961885+00:00）：独立smoke完成1epoch/4次更新，loss/score/DDPM全部有限；正式驱动PID537055、训练PID537240，实际已完成925/10000epochs、3700次更新。初始化逐张量核对为fresh seed42，正式初始权重与smoke初始完全一致、与smoke训练后权重不同；最新恢复checkpoint epoch900的模型/optimizer全部有限，采样及优化器进度一致。W&B：https://wandb.ai/qc13659041465-ustc/smp/runs/fszehphp；37项测试及Ruff通过，历史EXP-036全部13个冻结代码SHA保持一致。证据为launch_report.json、audit/fresh_initialization_and_checkpoint.json和audit/historical_code_identity_check.json。
