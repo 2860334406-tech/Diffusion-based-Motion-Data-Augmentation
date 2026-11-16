@@ -24,7 +24,13 @@ policy/
     └── SHA256SUMS
 ```
 
-上面的 `chest_speed_gradient_v1/` 是待创建版本的示例；当前 `_template/` 中只提供说明和清单。
+`_template/` 用于创建新版本。已归档的胸推版本还包含训练血缘、prior 元数据、原始源码差异和便携评估脚本。
+
+## 已归档版本
+
+| 目录 | 实验与策略 | 历史评估 |
+| --- | --- | --- |
+| [chest_speed_gradient_v1](chest_speed_gradient_v1/README.md) | EXP-022，`model_31995.pt`，匹配 static80 prior | 0.20 m/s 胸推，1024 回合，卸力成功率 98.83%，通过原 C 阶段门槛。 |
 
 ## 每个版本提供什么
 
@@ -39,14 +45,14 @@ policy/
 | `README.md` | 本版本的用途、实际验证过的加载/评估/续训命令，以及文件路径如何对应。 |
 | `SHA256SUMS` | 包内文件的校验清单，供合作者检查传输完整性。 |
 
-首个胸推联调版本可采用 EXP-022 的 `model_31995.pt` 和 `pretrained_lafan_low_speed_static80.pt`。这套旧评分方案不使用独立的冻结 Score 校准文件。结果与局限见[正式评估报告](../docs/FORMAL_CHECKPOINT_EVALUATION_20261112.md)。
+已归档胸推版本使用 EXP-022 的 `model_31995.pt` 和 `pretrained_lafan_low_speed_static80.pt`。这套旧评分方案不使用独立的冻结 Score 校准文件。结果与局限见[正式评估报告](../docs/FORMAL_CHECKPOINT_EVALUATION_20261112.md)。
 
 ## 新增版本
 
 维护者在 `master` 上发布文件。在仓库根目录首次创建一个新版本：
 
 ```bash
-cp -R policy/_template policy/chest_speed_gradient_v1
+cp -R policy/_template policy/my_policy_v2
 ```
 
 随后把配套文件放进新目录，填写该目录的 `README.md` 和 `manifest.json`。把清单的 `status` 从 `template` 改成 `candidate` 或 `evaluated`；是否通过验收由 `evaluation.gate_passed` 单独记录。
@@ -60,7 +66,7 @@ cp -R policy/_template policy/chest_speed_gradient_v1
 在所有实际文件准备齐全后生成校验清单；如有 `calibration.pt` 或额外归一化文件，将它们也加入命令：
 
 ```bash
-cd policy/chest_speed_gradient_v1
+cd policy/my_policy_v2
 sha256sum policy.pt prior.pt env.yaml agent.yaml evaluation.json > SHA256SUMS
 sha256sum -c SHA256SUMS
 ```
@@ -69,8 +75,8 @@ sha256sum -c SHA256SUMS
 
 ```bash
 cd ../..
-git add policy/chest_speed_gradient_v1
-git commit -m "Add chest policy handoff v1"
+git add policy/my_policy_v2
+git commit -m "Add policy handoff v2"
 git push origin master
 ```
 

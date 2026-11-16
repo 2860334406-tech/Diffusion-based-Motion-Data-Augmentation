@@ -1,0 +1,876 @@
+--- git commit ---
+28d1dfd1b7b4447977fbdb2062167d9f87a2faaa
+
+
+--- git status ---
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   README.md
+	modified:   scripts/pretrain.py
+	modified:   src/smp/pretrain/dataset.py
+	modified:   src/smp/pretrain/model.py
+	modified:   src/smp/pretrain/pretrain_cfg.py
+	modified:   src/smp/rl/events.py
+	modified:   src/smp/rl/rewards.py
+	modified:   src/smp/rl/tasks/__init__.py
+	modified:   src/smp/rl/utils.py
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	docs/
+	scripts/curate_conditional_contact.py
+	scripts/curate_lafan_low_speed.py
+	scripts/evaluate_force_unloading.py
+	scripts/pretrain_conditional_contact.py
+	scripts/review_lafan_low_speed.py
+	scripts/run_conditional_contact_suite.py
+	scripts/run_force_unloading_speed_gradient_suite.py
+	scripts/run_gsi_static80_shoulder_suite.py
+	scripts/smoke_conditional_contact.py
+	scripts/smoke_force_unloading.py
+	scripts/smoke_force_unloading_shoulder.py
+	scripts/smoke_force_unloading_speed_gradient.py
+	scripts/train_force_unloading_curriculum.py
+	scripts/validate_conditional_contact.py
+	scripts/validate_low_speed_prior.py
+	src/smp/pretrain/conditional_dataset.py
+	src/smp/pretrain/conditioning.py
+	src/smp/rl/conditional_normalizer.py
+	src/smp/rl/tasks/force_unloading/
+	tests/
+
+no changes added to commit (use "git add" and/or "git commit -a") 
+
+
+--- git diff ---
+diff --git a/README.md b/README.md
+index 653c284..7e57fb8 100644
+--- a/README.md
++++ b/README.md
+@@ -29,7 +29,7 @@ points its `init_smp_state` event at the right one, so no setup is needed:
+ 
+ | Checkpoint                       | Trained on            | Used by                          |
+ | -------------------------------- | --------------------- | -------------------------------- |
+-| `pretrained_loco.pt`             | walk / jog / run      | `Smp-Forward-G1`                 |
++| `pretrained_loco.pt`             | walk / jog / run      | `Smp-Forward-G1`, `Smp-Force-Unloading-G1` |
+ | `pretrained_lafan_run.pt`        | LAFAN run subset      | `Smp-Steering-G1`, `Smp-Location-G1` |
+ | `pretrained_getup_f2s2.pt`       | get-up (fall→stand)   | `Smp-Getup-G1`                   |
+ 
+@@ -158,7 +158,7 @@ uv run scripts/pretrain.py --data-dir datasets/npz/forward/ --num-layers 2 --no-
+ 
+ ## RL
+ 
+-Four downstream tasks are registered with `mjlab.tasks.registry` (importing
++Five downstream tasks are registered with `mjlab.tasks.registry` (importing
+ `smp.rl.tasks` self-registers them):
+ 
+ | Task              | Demo | Description                              |
+@@ -167,6 +167,7 @@ Four downstream tasks are registered with `mjlab.tasks.registry` (importing
+ | `Smp-Steering-G1` | <img src="https://raw.githubusercontent.com/SUZ-tsinghua/smp/assets/steering.gif" width="200"/> | track a commanded velocity + facing direction |
+ | `Smp-Location-G1` | <img src="https://raw.githubusercontent.com/SUZ-tsinghua/smp/assets/location.gif" width="200"/> | walk to a world-frame xy goal |
+ | `Smp-Getup-G1`    | <img src="https://raw.githubusercontent.com/SUZ-tsinghua/smp/assets/getup.gif" width="200"/> | stand up from a fallen pose |
++| `Smp-Force-Unloading-G1` | — | unload a rail-mounted spherical pusher while staying balanced |
+ 
+ ### Train / play
+ 
+diff --git a/scripts/pretrain.py b/scripts/pretrain.py
+index ededf9c..75921ea 100644
+--- a/scripts/pretrain.py
++++ b/scripts/pretrain.py
+@@ -3,14 +3,16 @@
+ from __future__ import annotations
+ 
+ import copy
++import hashlib
++import json
+ from datetime import datetime
+ from pathlib import Path
+-from typing import Any
++from typing import Any, Iterator
+ 
+ import torch
+ import torch.nn.functional as F
+ import tyro
+-from torch.utils.data import DataLoader, random_split
++from torch.utils.data import DataLoader, Sampler, Subset, random_split
+ 
+ from smp.pretrain.dataset import MotionWindowDataset
+ from smp.pretrain.model import DiffusionDenoiser
+@@ -45,11 +47,112 @@ class _Ema:
+         v_dst.copy_(v_src)
+ 
+ 
++class ExactCategorySampler(Sampler[int]):
++  """Draw an exact, reproducible number of windows from each category."""
++
++  def __init__(
++    self,
++    dataset: MotionWindowDataset,
++    manifest_file: str | Path,
++    seed: int,
++  ) -> None:
++    manifest_path = Path(manifest_file)
++    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
++    if payload.get("schema_version") != 1:
++      raise ValueError("Sampling manifest schema_version must be 1")
++    self.samples_per_epoch = int(payload["samples_per_epoch"])
++    if self.samples_per_epoch <= 0:
++      raise ValueError("samples_per_epoch must be positive")
++
++    fractions = payload["category_fractions"]
++    if not fractions or any(float(value) <= 0.0 for value in fractions.values()):
++      raise ValueError("category_fractions must contain positive values")
++    if abs(sum(float(value) for value in fractions.values()) - 1.0) > 1.0e-9:
++      raise ValueError("category_fractions must sum to 1")
++
++    files = payload["files"]
++    if set(files) != set(dataset.file_slices):
++      missing = sorted(set(dataset.file_slices).difference(files))
++      extra = sorted(set(files).difference(dataset.file_slices))
++      raise ValueError(
++        f"Sampling manifest file mismatch: missing={missing}, extra={extra}"
++      )
++
++    pools: dict[str, list[int]] = {category: [] for category in fractions}
++    for filename, category in files.items():
++      if category not in pools:
++        raise ValueError(f"Unknown category {category!r} for {filename}")
++      file_slice = dataset.file_slices[filename]
++      pools[category].extend(range(file_slice.start, file_slice.stop))
++    if any(not pool for pool in pools.values()):
++      raise ValueError("Every sampling category must contain at least one window")
++
++    categories = list(fractions)
++    counts: dict[str, int] = {}
++    assigned = 0
++    for category in categories[:-1]:
++      count = round(self.samples_per_epoch * float(fractions[category]))
++      counts[category] = count
++      assigned += count
++    counts[categories[-1]] = self.samples_per_epoch - assigned
++    if any(count <= 0 for count in counts.values()):
++      raise ValueError("Every category must receive at least one sample per epoch")
++
++    self.category_fractions = {
++      category: float(fractions[category]) for category in categories
++    }
++    self.category_counts = counts
++    self.category_pools = {
++      category: torch.tensor(pool, dtype=torch.long) for category, pool in pools.items()
++    }
++    self.seed = seed
++    self.epoch = 0
++    self.manifest_path = manifest_path
++    self.manifest_sha256 = hashlib.sha256(manifest_path.read_bytes()).hexdigest()
++
++  def __len__(self) -> int:
++    return self.samples_per_epoch
++
++  def __iter__(self) -> Iterator[int]:
++    generator = torch.Generator().manual_seed(self.seed + self.epoch)
++    sampled: list[torch.Tensor] = []
++    for category, count in self.category_counts.items():
++      pool = self.category_pools[category]
++      positions = torch.randint(len(pool), (count,), generator=generator)
++      sampled.append(pool[positions])
++    indices = torch.cat(sampled)
++    indices = indices[torch.randperm(len(indices), generator=generator)]
++    self.epoch += 1
++    return iter(indices.tolist())
++
++  def metadata(self) -> dict[str, Any]:
++    return {
++      "manifest": str(self.manifest_path),
++      "manifest_sha256": self.manifest_sha256,
++      "samples_per_epoch": self.samples_per_epoch,
++      "category_fractions": self.category_fractions,
++      "category_counts": self.category_counts,
++      "seed": self.seed,
++    }
++
++
++def _maybe_upload_checkpoint(
++  wandb_run: Any | None,
++  path: Path,
++  base_path: Path,
++  upload_model: bool,
++) -> None:
++  """Upload a checkpoint only when artifact upload was explicitly enabled."""
++  if wandb_run is not None and upload_model:
++    wandb_run.save(str(path), base_path=str(base_path))
++
++
+ def _diffusion_loss(
+   model: torch.nn.Module | DiffusionDenoiser,
+   scheduler: DDPMScheduler,
+   x_0: torch.Tensor,
+   num_noise_samples: int,
++  condition_id: torch.Tensor | None = None,
+ ) -> torch.Tensor:
+   """DDPM ε-prediction L1 loss with multiple noise samples per data point.
+ 
+@@ -64,7 +167,11 @@ def _diffusion_loss(
+   t = scheduler.sample_timesteps(B * K, x_0.device)
+   noise = torch.randn_like(x_0_exp)
+   x_t = scheduler.add_noise(x_0_exp, noise, t)
+-  return F.l1_loss(model(x_t, t), noise)
++  predicted = (
++    model(x_t, t) if condition_id is None
++    else model(x_t, t, condition_id.repeat_interleave(K))
++  )
++  return F.l1_loss(predicted, noise)
+ 
+ 
+ def _save_checkpoint(
+@@ -76,6 +183,7 @@ def _save_checkpoint(
+   cfg: PretrainCfg,
+   optimizer: torch.optim.Optimizer | None = None,
+   ema: _Ema | None = None,
++  sampling_metadata: dict[str, Any] | None = None,
+ ) -> None:
+   data: dict[str, Any] = {
+     "epoch": epoch,
+@@ -92,6 +200,8 @@ def _save_checkpoint(
+     data["optimizer"] = optimizer.state_dict()
+   if ema is not None:
+     data["model_ema"] = ema.shadow.state_dict()
++  if sampling_metadata is not None:
++    data["sampling"] = sampling_metadata
+   torch.save(data, path)
+ 
+ 
+@@ -112,12 +222,24 @@ def pretrain(cfg: PretrainCfg) -> Path:
+     f"feature_dim={feature_dim}, window_size={window_size}"
+   )
+ 
+-  train_set, val_set = random_split(dataset, [n_train, n_val])
++  sampler: ExactCategorySampler | None = None
++  if cfg.sampling_manifest_file:
++    if cfg.train_split != 1.0:
++      raise ValueError("Exact category sampling requires train_split=1.0")
++    train_set = dataset
++    val_set = Subset(dataset, [])
++    sampler = ExactCategorySampler(dataset, cfg.sampling_manifest_file, cfg.seed)
++    sampling_metadata = sampler.metadata()
++    print(f"Exact category sampling: {json.dumps(sampling_metadata, sort_keys=True)}")
++  else:
++    train_set, val_set = random_split(dataset, [n_train, n_val])
++    sampling_metadata = None
+   pin_memory = device.type == "cuda"
+   train_loader = DataLoader(
+     train_set,
+     batch_size=cfg.batch_size,
+-    shuffle=True,
++    shuffle=sampler is None,
++    sampler=sampler,
+     pin_memory=pin_memory,
+   )
+   val_loader = DataLoader(
+@@ -155,6 +277,9 @@ def pretrain(cfg: PretrainCfg) -> Path:
+ 
+     wandb_run = wandb.init(project=cfg.wandb_project, name=cfg.name, config=vars(cfg))
+ 
++    if sampling_metadata is not None:
++      wandb_run.config.update({"sampling": sampling_metadata})
++
+   for epoch in range(cfg.num_epochs):
+     model.train()
+     epoch_loss = torch.zeros((), device=device)
+@@ -189,19 +314,33 @@ def pretrain(cfg: PretrainCfg) -> Path:
+     if epoch % cfg.save_interval == 0 or epoch == cfg.num_epochs - 1:
+       ckpt_path = save_dir / f"checkpoint_{epoch:05d}.pt"
+       _save_checkpoint(
+-        ckpt_path, epoch, model, dataset, feature_dim, cfg, optimizer, ema
++        ckpt_path,
++        epoch,
++        model,
++        dataset,
++        feature_dim,
++        cfg,
++        optimizer,
++        ema,
++        sampling_metadata,
+       )
+-      if wandb_run is not None:
+-        wandb_run.save(str(ckpt_path), base_path=str(save_dir))
++      _maybe_upload_checkpoint(wandb_run, ckpt_path, save_dir, cfg.upload_model)
+ 
+   final_path = save_dir / "pretrained.pt"
+   _save_checkpoint(
+-    final_path, cfg.num_epochs, model, dataset, feature_dim, cfg, ema=ema
++    final_path,
++    cfg.num_epochs,
++    model,
++    dataset,
++    feature_dim,
++    cfg,
++    ema=ema,
++    sampling_metadata=sampling_metadata,
+   )
+   print(f"Saved final checkpoint to {final_path}")
+ 
+   if wandb_run is not None:
+-    wandb_run.save(str(final_path), base_path=str(save_dir))
++    _maybe_upload_checkpoint(wandb_run, final_path, save_dir, cfg.upload_model)
+     wandb_run.finish()
+ 
+   return final_path
+diff --git a/src/smp/pretrain/dataset.py b/src/smp/pretrain/dataset.py
+index e9c02e4..86799e2 100644
+--- a/src/smp/pretrain/dataset.py
++++ b/src/smp/pretrain/dataset.py
+@@ -27,7 +27,9 @@ class MotionWindowDataset(Dataset[torch.Tensor]):
+       raise FileNotFoundError(msg)
+ 
+     chunks: list[np.ndarray] = []
++    self.file_slices: dict[str, slice] = {}
+     expected_shape: tuple[int, int] | None = None
++    offset = 0
+     for npz_file in npz_files:
+       with np.load(npz_file, allow_pickle=False) as npz:
+         windows = npz["windows"].astype(np.float32, copy=False)
+@@ -45,6 +47,9 @@ class MotionWindowDataset(Dataset[torch.Tensor]):
+         )
+         raise ValueError(msg)
+       chunks.append(windows)
++      next_offset = offset + int(windows.shape[0])
++      self.file_slices[npz_file.name] = slice(offset, next_offset)
++      offset = next_offset
+ 
+     assert expected_shape is not None
+     self.window_size, self.feature_dim = expected_shape
+diff --git a/src/smp/pretrain/model.py b/src/smp/pretrain/model.py
+index 23187a0..9f9dc42 100644
+--- a/src/smp/pretrain/model.py
++++ b/src/smp/pretrain/model.py
+@@ -50,8 +50,11 @@ class _AdaLayerNormSingle(nn.Module):
+     self.silu = nn.SiLU()
+     self.linear = nn.Linear(embedding_dim, 6 * embedding_dim, bias=True)
+ 
+-  def forward(self, t: torch.Tensor) -> torch.Tensor:
+-    t_emb = self.timestep_embedder(self.time_proj(t)).unsqueeze(1)
++  def forward(self, t: torch.Tensor, condition_embedding: torch.Tensor | None = None) -> torch.Tensor:
++    t_emb = self.timestep_embedder(self.time_proj(t))
++    if condition_embedding is not None:
++      t_emb = t_emb + condition_embedding
++    t_emb = t_emb.unsqueeze(1)
+     return self.linear(self.silu(t_emb))
+ 
+ 
+@@ -179,10 +182,15 @@ class DiffusionDenoiser(nn.Module):
+     num_layers: int = 2,
+     dropout: float = 0.0,
+     head_dim: int | None = None,
++    num_conditions: int = 0,
+   ) -> None:
+     super().__init__()
+     self.feature_dim = feature_dim
+     self.window_size = window_size
++    if num_conditions < 0:
++      raise ValueError("num_conditions must be non-negative")
++    self.num_conditions = num_conditions
++    self.null_condition_id = num_conditions
+ 
+     if head_dim is None:
+       if d_model % nhead != 0:
+@@ -205,6 +213,9 @@ class DiffusionDenoiser(nn.Module):
+     self.preprocess_conv = nn.Conv1d(feature_dim, feature_dim, 1, bias=False)
+     self.proj_in = nn.Linear(feature_dim, self.inner_dim, bias=False)
+     self.adaln_single = _AdaLayerNormSingle(self.inner_dim)
++    self.condition_embedding = (
++      nn.Embedding(num_conditions + 1, self.inner_dim) if num_conditions else None
++    )
+     self.sequence_pos_encoder = _SinusoidalPositionalEmbedding(
+       self.inner_dim, max_seq_length=max(window_size, 32)
+     )
+@@ -222,13 +233,25 @@ class DiffusionDenoiser(nn.Module):
+     self.proj_out = nn.Linear(self.inner_dim, feature_dim, bias=False)
+     self.postprocess_conv = nn.Conv1d(feature_dim, feature_dim, 1, bias=False)
+ 
+-  def forward(self, x_t: torch.Tensor, t: torch.Tensor) -> torch.Tensor:
++  def forward(
++    self, x_t: torch.Tensor, t: torch.Tensor,
++    condition_id: torch.Tensor | None = None,
++  ) -> torch.Tensor:
++    condition_embedding = None
++    if self.condition_embedding is not None:
++      if condition_id is None:
++        raise ValueError("Conditional model requires condition_id; NULL is not stand")
++      if condition_id.shape != t.shape or condition_id.dtype != torch.long:
++        raise ValueError("condition_id must be a long tensor of shape (B,)")
++      condition_embedding = self.condition_embedding(condition_id)
++    elif condition_id is not None:
++      raise ValueError("Unconditional model does not accept condition_id")
+     h = x_t.transpose(1, 2)
+     h = self.preprocess_conv(h) + h
+     h = h.transpose(1, 2)
+ 
+     h = self.proj_in(h)
+-    time_hidden_states = self.adaln_single(t)
++    time_hidden_states = self.adaln_single(t, condition_embedding)
+     h = self.sequence_pos_encoder(h)
+ 
+     for block in self.blocks:
+diff --git a/src/smp/pretrain/pretrain_cfg.py b/src/smp/pretrain/pretrain_cfg.py
+index 4bd55ff..9d9f854 100644
+--- a/src/smp/pretrain/pretrain_cfg.py
++++ b/src/smp/pretrain/pretrain_cfg.py
+@@ -16,6 +16,8 @@ class PretrainCfg:
+   norm_stats_file: str = "datasets/norm_stats.npz"
+   """Path to q01/q99 quantile stats from compute_norm_stats.py."""
+   train_split: float = 0.9
++  sampling_manifest_file: str = ""
++  """Optional exact category-ratio sampling manifest (JSON)."""
+ 
+   # Model. ``d_model = nhead · head_dim`` is the DiT inner dim; FF inner
+   # dim is fixed at 4·d_model.
+@@ -48,6 +50,8 @@ class PretrainCfg:
+   log_dir: str = "logs/pretrain"
+   wandb_project: str = "smp"
+   use_wandb: bool = True
++  upload_model: bool = False
++  """Upload checkpoint files to W&B in addition to scalar logs."""
+ 
+   # Device
+   device: str = ""
+diff --git a/src/smp/rl/events.py b/src/smp/rl/events.py
+index 9c597bc..8a80db3 100644
+--- a/src/smp/rl/events.py
++++ b/src/smp/rl/events.py
+@@ -8,6 +8,8 @@ env-origin-relative frame, so the SMP reward is invariant to env placement.
+ 
+ from __future__ import annotations
+ 
++import math
++
+ import torch
+ from mjlab.envs import ManagerBasedRlEnv
+ from mjlab.utils.lab_api.math import quat_apply, quat_mul, yaw_quat
+@@ -46,6 +48,11 @@ def init_smp_state(
+   ckpt_path: str = "",
+   gsi_buffer_size: int = 4096,
+   gsi_batch_size: int = 256,
++  gsi_reject_unsafe: bool = False,
++  gsi_joint_limit_margin: float = 0.0,
++  gsi_max_root_planar_speed: float | None = None,
++  gsi_self_collision_sensor: str | None = None,
++  gsi_max_sampling_multiplier: int = 10,
+   compile_model: bool = True,
+   compile_mode: str | None = None,
+ ) -> None:
+@@ -65,6 +72,13 @@ def init_smp_state(
+   model, scheduler, q_low, q_high, feature_dim, window_size = load_denoiser(
+     ckpt_path, env.device
+   )
++  env._smp_num_conditions = model.num_conditions  # type: ignore[attr-defined]
++  if model.num_conditions:
++    from smp.pretrain.conditioning import CONDITION_SCHEMA, sha256
++    from smp.rl.conditional_normalizer import ConditionalDiffNormalizer
++    if model.num_conditions != 5:
++      raise ValueError("Only the five-condition schema is supported")
++    env._smp_prior_identity = {"sha256": sha256(ckpt_path), "schema": CONDITION_SCHEMA}
+   model = _maybe_compile(model, compile_model, compile_mode)
+   env._smp_bundle = (  # type: ignore[attr-defined]
+     model,
+@@ -87,27 +101,275 @@ def init_smp_state(
+     num_ee=NUM_EE,
+     device=env.device,
+   )
+-  env._smp_normalizer = DiffNormalizer(scheduler.num_timesteps, env.device)  # type: ignore[attr-defined]
+-
+-  if gsi_buffer_size <= 0:
+-    msg = f"gsi_buffer_size must be positive, got {gsi_buffer_size}."
+-    raise ValueError(msg)
+-  pool_chunks: list[torch.Tensor] = []
+-  for start in range(0, gsi_buffer_size, gsi_batch_size):
+-    bsz = min(gsi_batch_size, gsi_buffer_size - start)
+-    pool_chunks.append(_ddpm_sample(env, bsz))
+-  env._smp_gsi_pool = torch.cat(pool_chunks, dim=0)  # type: ignore[attr-defined]
++  env._smp_normalizer = (
++    ConditionalDiffNormalizer(scheduler.num_timesteps, env.device)
++    if env._smp_num_conditions else DiffNormalizer(scheduler.num_timesteps, env.device)
++  )  # type: ignore[attr-defined]
++
++  safety_cfg = {
++    "enabled": gsi_reject_unsafe,
++    "joint_limit_margin": gsi_joint_limit_margin,
++    "max_root_planar_speed": gsi_max_root_planar_speed,
++    "self_collision_sensor": gsi_self_collision_sensor,
++    "max_sampling_multiplier": gsi_max_sampling_multiplier,
++    "batch_size": gsi_batch_size,
++  }
++  env._smp_gsi_safety_cfg = safety_cfg  # type: ignore[attr-defined]
++  pool, stats = _generate_gsi_windows(
++    env,
++    num_samples=gsi_buffer_size,
++    **safety_cfg,
++  )
++  env._smp_gsi_pool = pool  # type: ignore[attr-defined]
++  env._smp_gsi_safety_stats = stats  # type: ignore[attr-defined]
++  if gsi_reject_unsafe:
++    _print_gsi_safety_stats("initial pool", stats)
+ 
+   if compile_model and env.num_envs != gsi_batch_size:
+     # Warm the reward-path shape so its Inductor compile happens here.
+     with torch.no_grad():
+       dummy_x = torch.randn(env.num_envs, window_size, feature_dim, device=env.device)
+       dummy_t = torch.zeros(env.num_envs, dtype=torch.long, device=env.device)
+-      _ = model(dummy_x, dummy_t)
++      if env._smp_num_conditions:
++        _ = model(dummy_x, dummy_t, torch.zeros_like(dummy_t))
++      else:
++        _ = model(dummy_x, dummy_t)
+ 
+   gsi_reset(env)
+ 
+ 
++def _window_safety_masks(
++  windows: torch.Tensor,
++  joint_pos_limits: torch.Tensor,
++  joint_limit_margin: float,
++) -> tuple[torch.Tensor, torch.Tensor]:
++  """Return finite and last-frame joint-limit masks for GSI windows.
++
++  The simulator only receives the last frame during GSI reset. If limits are
++  per-environment, use their intersection so a retained window is safe in any
++  environment it may later be sampled into.
++  """
++  if joint_limit_margin < 0.0:
++    raise ValueError(
++      f"gsi_joint_limit_margin must be non-negative, got {joint_limit_margin}."
++    )
++  if joint_pos_limits.ndim == 3:
++    lower = joint_pos_limits[..., 0].amax(dim=0)
++    upper = joint_pos_limits[..., 1].amin(dim=0)
++  elif joint_pos_limits.ndim == 2:
++    lower = joint_pos_limits[..., 0]
++    upper = joint_pos_limits[..., 1]
++  else:
++    raise ValueError(
++      "joint_pos_limits must have shape (J, 2) or (num_envs, J, 2); "
++      f"got {tuple(joint_pos_limits.shape)}."
++    )
++
++  lower = lower + joint_limit_margin
++  upper = upper - joint_limit_margin
++  if torch.any(lower > upper):
++    raise ValueError(
++      "gsi_joint_limit_margin leaves an empty interval for at least one joint."
++    )
++
++  finite = torch.isfinite(windows).all(dim=-1).all(dim=-1)
++  joint_pos = slice_features(windows)["joint_pos"][:, -1]
++  within_limits = ((joint_pos >= lower) & (joint_pos <= upper)).all(dim=-1)
++  return finite, within_limits
++
++
++def _root_planar_speed_mask(
++  windows: torch.Tensor, max_root_planar_speed: float | None
++) -> torch.Tensor:
++  """Keep GSI windows whose last root frame is within the task speed bound."""
++  if max_root_planar_speed is None:
++    return torch.ones(windows.shape[0], device=windows.device, dtype=torch.bool)
++  if max_root_planar_speed <= 0.0:
++    raise ValueError(
++      "gsi_max_root_planar_speed must be positive when set, "
++      f"got {max_root_planar_speed}."
++    )
++  root_lin_vel = slice_features(windows)["root_lin_vel"][:, -1, :2]
++  return torch.linalg.vector_norm(root_lin_vel, dim=-1) <= max_root_planar_speed
++
++
++@torch.no_grad()
++def _reject_self_collisions(
++  env: ManagerBasedRlEnv,
++  windows: torch.Tensor,
++  candidate_mask: torch.Tensor,
++  sensor_name: str | None,
++) -> torch.Tensor:
++  """Reject candidate windows whose last-frame pose self-collides.
++
++  Candidates are checked in chunks no larger than ``env.num_envs``. A
++  kinematic ``forward`` refreshes MuJoCo contacts without advancing time.
++  """
++  if sensor_name is None:
++    return candidate_mask
++  if sensor_name not in env.scene.sensors:
++    available = ", ".join(sorted(env.scene.sensors))
++    raise ValueError(
++      f"GSI self-collision sensor '{sensor_name}' not found. Available: {available}"
++    )
++
++  sensor = env.scene[sensor_name]
++  safe = candidate_mask.clone()
++  candidate_ids = candidate_mask.nonzero(as_tuple=False).squeeze(-1)
++  if candidate_ids.numel() == 0:
++    return safe
++
++  # Screening reuses the first few simulation worlds. Preserve both physical
++  # state and the SMP history so a periodic gsi_refresh is observationally
++  # neutral to environments that are currently mid-episode.
++  max_test_envs = min(int(candidate_ids.numel()), env.num_envs)
++  test_env_ids = torch.arange(max_test_envs, device=env.device)
++  qpos = env.sim.data.qpos[test_env_ids].clone()
++  qvel = env.sim.data.qvel[test_env_ids].clone()
++  buffer: MotionFeatureBuffer = env._smp_buffer  # type: ignore[attr-defined]
++  buffer_fields = (
++    "root_pos_w",
++    "root_quat_w",
++    "root_lin_vel_w",
++    "root_ang_vel_w",
++    "ee_pos_w",
++    "joint_pos",
++    "joint_vel",
++  )
++  buffer_state = {
++    name: getattr(buffer, name)[test_env_ids].clone() for name in buffer_fields
++  }
++
++  try:
++    for start in range(0, int(candidate_ids.numel()), env.num_envs):
++      window_ids = candidate_ids[start : start + env.num_envs]
++      count = int(window_ids.numel())
++      env_ids = test_env_ids[:count]
++      _prime_sim_and_buffer(env, env_ids, windows[window_ids])
++      env.sim.forward()
++      # ``forward`` updates sensordata; reset only invalidates the Python cache.
++      sensor.reset(env_ids)
++      found = sensor.data.found
++      if found is None:
++        raise RuntimeError(
++          f"GSI self-collision sensor '{sensor_name}' does not expose 'found'."
++        )
++      colliding = found[env_ids].bool().any(dim=-1)
++      safe[window_ids[colliding]] = False
++  finally:
++    env.sim.data.qpos[test_env_ids] = qpos
++    env.sim.data.qvel[test_env_ids] = qvel
++    for name, value in buffer_state.items():
++      getattr(buffer, name)[test_env_ids] = value
++    env.sim.forward()
++    sensor.reset()
++  return safe
++
++
++@torch.no_grad()
++def _generate_gsi_windows(
++  env: ManagerBasedRlEnv,
++  num_samples: int,
++  batch_size: int,
++  enabled: bool,
++  joint_limit_margin: float,
++  max_root_planar_speed: float | None,
++  self_collision_sensor: str | None,
++  max_sampling_multiplier: int,
++) -> tuple[torch.Tensor, dict[str, int | float]]:
++  """Generate a GSI pool, optionally retaining only safe last-frame states."""
++  if num_samples <= 0:
++    raise ValueError(f"GSI sample count must be positive, got {num_samples}.")
++  if batch_size <= 0:
++    raise ValueError(f"GSI batch size must be positive, got {batch_size}.")
++  if max_sampling_multiplier <= 0:
++    raise ValueError(
++      f"gsi_max_sampling_multiplier must be positive, got {max_sampling_multiplier}."
++    )
++
++  if not enabled:
++    chunks: list[torch.Tensor] = []
++    for start in range(0, num_samples, batch_size):
++      chunks.append(_ddpm_sample(env, min(batch_size, num_samples - start)))
++    stats: dict[str, int | float] = {
++      "requested": num_samples,
++      "sampled": num_samples,
++      "safe_candidates": num_samples,
++      "retained": num_samples,
++      "nonfinite_rejected": 0,
++      "joint_limit_rejected": 0,
++      "root_speed_rejected": 0,
++      "self_collision_rejected": 0,
++      "acceptance_rate": 1.0,
++    }
++    return torch.cat(chunks, dim=0), stats
++
++  max_batches = math.ceil(num_samples / batch_size) * max_sampling_multiplier
++  retained_chunks: list[torch.Tensor] = []
++  retained = 0
++  sampled = 0
++  safe_candidates = 0
++  nonfinite_rejected = 0
++  joint_limit_rejected = 0
++  root_speed_rejected = 0
++  self_collision_rejected = 0
++  robot = env.scene["robot"]
++
++  for _ in range(max_batches):
++    windows = _ddpm_sample(env, batch_size)
++    sampled += batch_size
++    finite, within_limits = _window_safety_masks(
++      windows, robot.data.joint_pos_limits, joint_limit_margin
++    )
++    nonfinite_rejected += int((~finite).sum().item())
++    joint_limit_rejected += int((finite & ~within_limits).sum().item())
++    within_speed = _root_planar_speed_mask(windows, max_root_planar_speed)
++    root_speed_rejected += int((finite & within_limits & ~within_speed).sum().item())
++    pre_collision = finite & within_limits & within_speed
++    safe = _reject_self_collisions(env, windows, pre_collision, self_collision_sensor)
++    self_collision_rejected += int((pre_collision & ~safe).sum().item())
++    safe_candidates += int(safe.sum().item())
++
++    remaining = num_samples - retained
++    accepted = windows[safe][:remaining]
++    if accepted.numel() > 0:
++      retained_chunks.append(accepted)
++      retained += int(accepted.shape[0])
++    if retained == num_samples:
++      break
++
++  stats = {
++    "requested": num_samples,
++    "sampled": sampled,
++    "safe_candidates": safe_candidates,
++    "retained": retained,
++    "nonfinite_rejected": nonfinite_rejected,
++    "joint_limit_rejected": joint_limit_rejected,
++    "root_speed_rejected": root_speed_rejected,
++    "self_collision_rejected": self_collision_rejected,
++    "acceptance_rate": safe_candidates / sampled if sampled else 0.0,
++  }
++  if retained != num_samples:
++    raise RuntimeError(
++      "Unable to fill the safe GSI pool within the sampling budget: "
++      f"{stats}. Increase gsi_max_sampling_multiplier only after checking "
++      "the prior, joint limits, and self-collision sensor."
++    )
++  return torch.cat(retained_chunks, dim=0), stats
++
++
++def _print_gsi_safety_stats(label: str, stats: dict[str, int | float]) -> None:
++  print(
++    f"[INFO] Safe GSI {label}: retained={stats['retained']}, "
++    f"safe_candidates={stats['safe_candidates']}/{stats['sampled']} "
++    f"(acceptance={100.0 * float(stats['acceptance_rate']):.2f}%, "
++    f"nonfinite={stats['nonfinite_rejected']}, "
++    f"joint_limit={stats['joint_limit_rejected']}, "
++    f"root_speed={stats['root_speed_rejected']}, "
++    f"self_collision={stats['self_collision_rejected']})"
++  )
++
++
+ def _prime_sim_and_buffer(
+   env: ManagerBasedRlEnv,
+   env_ids: torch.Tensor,
+@@ -190,6 +452,9 @@ def _prime_sim_and_buffer(
+ @torch.no_grad()
+ def _ddpm_sample(env: ManagerBasedRlEnv, n: int) -> torch.Tensor:
+   """Run DDPM ancestral sampling and return ``n`` denormalized windows."""
++  if getattr(env, "_smp_num_conditions", 0):
++    from smp.pretrain.conditioning import sample_condition
++    return sample_condition(env._smp_bundle, "stand", n)
+   model, scheduler, q_low, q_high, feature_dim, window_size = env._smp_bundle  # type: ignore[attr-defined]
+   x_t = torch.randn(n, window_size, feature_dim, device=env.device)
+   for t_int in reversed(range(scheduler.num_timesteps)):
+@@ -219,7 +484,18 @@ def gsi_refresh(
+     msg = f"num_samples ({num_samples}) cannot exceed pool size ({pool_size})"
+     raise ValueError(msg)
+ 
+-  new_windows = _ddpm_sample(env, num_samples)
++  safety_cfg = getattr(env, "_smp_gsi_safety_cfg", None)
++  if safety_cfg is None:
++    new_windows = _ddpm_sample(env, num_samples)
++  else:
++    new_windows, stats = _generate_gsi_windows(
++      env,
++      num_samples=num_samples,
++      **safety_cfg,
++    )
++    env._smp_gsi_refresh_safety_stats = stats  # type: ignore[attr-defined]
++    if bool(safety_cfg["enabled"]):
++      _print_gsi_safety_stats("refresh", stats)
+   head = int(getattr(env, "_smp_gsi_head", 0))
+   end = head + num_samples
+   if end <= pool_size:
+diff --git a/src/smp/rl/rewards.py b/src/smp/rl/rewards.py
+index b48f5d0..7f4a5f6 100644
+--- a/src/smp/rl/rewards.py
++++ b/src/smp/rl/rewards.py
+@@ -53,6 +53,11 @@ def smp_guidance_reward(
+   features = buffer.compute_features()
+   x_0 = 2.0 * (features - q_low) / (q_high - q_low + 1e-8) - 1.0
+   num_envs = x_0.shape[0]
++  condition_ids = None
++  if getattr(env, "_smp_num_conditions", 0):
++    controller = env._rail_controller
++    controller.refresh_contact()
++    condition_ids = controller.condition_state.reward_ids
+ 
+   total_err = torch.zeros(num_envs, device=device)
+   total_raw = torch.zeros(num_envs, device=device)
+@@ -64,11 +69,14 @@ def smp_guidance_reward(
+       t = torch.full((num_envs,), t_scalar, dtype=torch.long, device=device)
+       noise = torch.randn_like(x_0)
+       x_t = scheduler.add_noise(x_0, noise, t)
+-      eps_hat = model(x_t, t)
++      eps_hat = model(x_t, t) if condition_ids is None else model(x_t, t, condition_ids)
+       mse_per_env = ((eps_hat - noise) ** 2).mean(dim=(-1, -2))
+       total_raw += mse_per_env
+       if normalize:
+-        total_err += normalizer.update_and_normalize(t_scalar, mse_per_env)
++        if condition_ids is None:
++          total_err += normalizer.update_and_normalize(t_scalar, mse_per_env)
++        else:
++          total_err += normalizer.update_and_normalize(t_scalar, mse_per_env, condition_ids)
+       else:
+         total_err += mse_per_env
+ 
+@@ -87,4 +95,6 @@ def task_smp_product(
+   a tuple of ``(func, weight, kwargs)``.  Calls ``smp_guidance_reward`` once (the
+   sole SMP-buffer update), so it must be the task's only SMP reward term."""
+   task = sum(w * func(env, **kw) for func, w, kw in task_terms)
+-  return task * smp_guidance_reward(env, fixed_timesteps=fixed_timesteps, ws=ws)
++  smp_reward = smp_guidance_reward(env, fixed_timesteps=fixed_timesteps, ws=ws)
++  env._smp_reward = smp_reward  # type: ignore[attr-defined]
++  return task * smp_reward
+diff --git a/src/smp/rl/tasks/__init__.py b/src/smp/rl/tasks/__init__.py
+index b98f3a8..426601f 100644
+--- a/src/smp/rl/tasks/__init__.py
++++ b/src/smp/rl/tasks/__init__.py
+@@ -5,6 +5,7 @@ via side-effect imports of each task sub-package.
+ """
+ 
+ from smp.rl.tasks import (
++  force_unloading,  # noqa: F401  # registers Smp-Force-Unloading-G1
+   getup,  # noqa: F401  # registers Smp-Getup-G1
+   location,  # noqa: F401  # registers Smp-Location-G1
+   steering,  # noqa: F401  # registers Smp-Steering-G1 and Smp-Forward-G1
+diff --git a/src/smp/rl/utils.py b/src/smp/rl/utils.py
+index baa8acf..bff1e74 100644
+--- a/src/smp/rl/utils.py
++++ b/src/smp/rl/utils.py
+@@ -28,6 +28,10 @@ def load_denoiser(
+ 
+   ckpt: dict[str, Any] = torch.load(ckpt_path, map_location=device, weights_only=False)
+   cfg = ckpt["cfg"]
++  if cfg.get("num_conditions", 0):
++    from smp.pretrain.conditioning import CONDITION_SCHEMA
++    if ckpt.get("condition_schema") != CONDITION_SCHEMA:
++      raise ValueError("Conditional prior dictionary/version mismatch")
+   feature_dim = int(cfg["feature_dim"])
+   window_size = int(cfg["window_size"])
+ 
+@@ -38,9 +42,12 @@ def load_denoiser(
+     nhead=int(cfg.get("nhead", 8)),
+     num_layers=int(cfg.get("num_layers", 2)),
+     dropout=float(cfg.get("dropout", 0.0)),
++    num_conditions=int(cfg.get("num_conditions", 0)),
+   ).to(device)
+   state = ckpt.get("model_ema") or ckpt["model"]
+   model.load_state_dict(state)
++  if cfg.get("num_conditions", 0) and not all(torch.isfinite(p).all() for p in model.parameters()):
++    raise ValueError("Nonfinite conditional prior parameters")
+   model.eval()
+   model.requires_grad_(False)
+ 

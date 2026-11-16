@@ -1,0 +1,36 @@
+{
+  "checkpoint": "policy/chest_speed_gradient_v1/policy.pt",
+  "output": "logs/reproduction/policy_handoff/chest_speed_gradient_v1/evaluation.json",
+  "task_id": "Smp-Force-Unloading-G1",
+  "stationary_reward_weight": 0.1,
+  "stage": "c",
+  "prior_checkpoint": "policy/chest_speed_gradient_v1/prior.pt",
+  "gsi_max_root_planar_speed": 0.15,
+  "stationary_speed_scale": 10.0,
+  "sphere_radius": 0.1,
+  "target_probabilities": [
+    1.0,
+    0.0,
+    0.0
+  ],
+  "push_direction_mode": "front_to_back",
+  "num_episodes": 1024,
+  "num_envs": 256,
+  "seed": 42,
+  "device": "cuda:0",
+  "reference_speed": 0.2,
+  "max_force_weight_ratio": 0.15,
+  "ramp_time": 0.25,
+  "wait_range_s": [
+    1.0,
+    3.0
+  ],
+  "max_steps": 20000,
+  "video": false,
+  "video_length": 600,
+  "video_folder": "logs/reproduction/policy_handoff/chest_speed_gradient_v1/videos",
+  "video_height": 720,
+  "video_width": 1280,
+  "conditional_score_calibration": "",
+  "shoulder_gate": false
+}

@@ -1,0 +1,57 @@
+{
+  "checkpoint": "/root/smp/datasets/pretrain_ckpt/pretrained_lafan_low_speed_static80.pt",
+  "checkpoint_sha256": "2f9682f9d1e3e4a5298576f637736345e69fe9fea510992d4b9f7afd5f430dec",
+  "sampling_manifest": {
+    "config": {
+      "category_fractions": {
+        "dynamic": 0.2,
+        "stand": 0.8
+      },
+      "description": "Exact per-epoch 80/20 stand/dynamic sampling for the LAFAN low-speed prior.",
+      "files": {
+        "dynamic_dance2_s2.npz": "dynamic",
+        "dynamic_dance2_s2_mirror.npz": "dynamic",
+        "dynamic_fight_s4.npz": "dynamic",
+        "dynamic_fight_s4_mirror.npz": "dynamic",
+        "dynamic_jumps1_s5.npz": "dynamic",
+        "dynamic_jumps1_s5_mirror.npz": "dynamic",
+        "dynamic_sprint1_s4.npz": "dynamic",
+        "dynamic_sprint1_s4_mirror.npz": "dynamic",
+        "dynamic_walk3_s2.npz": "dynamic",
+        "dynamic_walk3_s2_mirror.npz": "dynamic",
+        "dynamic_walk4_s1.npz": "dynamic",
+        "dynamic_walk4_s1_mirror.npz": "dynamic",
+        "stand_jumps1_s2.npz": "stand",
+        "stand_jumps1_s2_mirror.npz": "stand",
+        "stand_jumps1_s5_126.npz": "stand",
+        "stand_jumps1_s5_126_mirror.npz": "stand",
+        "stand_sprint1_s2_263.npz": "stand",
+        "stand_sprint1_s2_263_mirror.npz": "stand",
+        "stand_sprint1_s4_61.npz": "stand",
+        "stand_sprint1_s4_61_mirror.npz": "stand",
+        "stand_sprint1_s4_73.npz": "stand",
+        "stand_sprint1_s4_73_mirror.npz": "stand",
+        "stand_walk3_s3_105.npz": "stand",
+        "stand_walk3_s3_105_mirror.npz": "stand"
+      },
+      "samples_per_epoch": 3360,
+      "schema_version": 1
+    },
+    "path": "/root/smp/docs/LAFAN_LOW_SPEED_STATIC80_SAMPLING.json",
+    "sha256": "8dd6ce73e243700a27a69b149e7d61d5a7065b7a6b7260e328b1e12b438bec35"
+  },
+  "schema_version": 1,
+  "source": "/root/smp/logs/reproduction/pretrain/lafan_low_speed_static80_seed42/20261109_082419/pretrained.pt",
+  "training": {
+    "batch_size": 1024,
+    "d_model": 128,
+    "diffusion_steps": 50,
+    "ema": false,
+    "epochs": 10000,
+    "learning_rate": 0.0003,
+    "noise_samples": 10,
+    "num_layers": 2,
+    "samples_per_epoch": 3360,
+    "seed": 42
+  }
+}

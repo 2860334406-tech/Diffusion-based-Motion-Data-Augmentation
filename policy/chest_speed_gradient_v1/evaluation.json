@@ -1,0 +1,297 @@
+{
+  "config": {
+    "checkpoint": "/personal_fast_storage/smp_experiments/smp_archive_20261112/root_smp/logs/reproduction/rsl_rl/smp_force_unloading_g1/2026-11-10_17-32-59_gsi015_decay10_static80_r010_v005_010_020_chest_c_seed42/model_31995.pt",
+    "output": "/personal_fast_storage/smp_experiments/formal_evaluation_20261112/reports/speed_chest_model31995_chest.json",
+    "task_id": "Smp-Force-Unloading-G1",
+    "stationary_reward_weight": 0.1,
+    "stage": "c",
+    "prior_checkpoint": "/root/smp/datasets/pretrain_ckpt/pretrained_lafan_low_speed_static80.pt",
+    "gsi_max_root_planar_speed": 0.15,
+    "stationary_speed_scale": 10.0,
+    "sphere_radius": 0.1,
+    "target_probabilities": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "push_direction_mode": "front_to_back",
+    "num_episodes": 1024,
+    "num_envs": 256,
+    "seed": 42,
+    "device": "cuda:0",
+    "reference_speed": 0.2,
+    "max_force_weight_ratio": 0.15,
+    "ramp_time": 0.25,
+    "wait_range_s": [
+      1.0,
+      3.0
+    ],
+    "max_steps": 20000,
+    "video": true,
+    "video_length": 600,
+    "video_folder": "/personal_fast_storage/smp_experiments/formal_evaluation_20261112/replays/speed_chest_model31995_chest",
+    "video_height": 720,
+    "video_width": 1280
+  },
+  "completed_episodes": 1024,
+  "environment_steps": 2400,
+  "finite": true,
+  "metrics": {
+    "peak_force_weight_ratio": {
+      "count": 1024,
+      "mean": 0.3285520672798157,
+      "p50": 0.3294006586074829,
+      "p90": 0.36810964345932007,
+      "p95": 0.38259249925613403,
+      "max": 0.7714905738830566
+    },
+    "normalized_force_impulse_s": {
+      "count": 1024,
+      "mean": 0.0050729792565107346,
+      "p50": 0.005019308999180794,
+      "p90": 0.005881079006940126,
+      "p95": 0.006172082852572203,
+      "max": 0.044773224741220474
+    },
+    "unload_time_s": {
+      "count": 1024,
+      "mean": 1.1986908912658691,
+      "p50": 1.2199994325637817,
+      "p90": 1.2399994134902954,
+      "p95": 1.259999394416809,
+      "max": 1.819998860359192
+    },
+    "event_success": {
+      "count": 1024,
+      "mean": 0.98828125,
+      "p50": 1.0,
+      "p90": 1.0,
+      "p95": 1.0,
+      "max": 1.0
+    },
+    "max_x_displacement_m": {
+      "count": 1024,
+      "mean": 0.1432788074016571,
+      "p50": 0.1442919671535492,
+      "p90": 0.15661309659481049,
+      "p95": 0.15947642922401428,
+      "max": 0.2441561371088028
+    },
+    "max_y_displacement_m": {
+      "count": 1024,
+      "mean": 0.11151839792728424,
+      "p50": 0.11260952055454254,
+      "p90": 0.1266932636499405,
+      "p95": 0.13086794316768646,
+      "max": 0.2653149962425232
+    },
+    "precontact_root_planar_speed_m_s": {
+      "count": 1024,
+      "mean": 0.16637369990348816,
+      "p50": 0.1252468228340149,
+      "p90": 0.3243459463119507,
+      "p95": 0.3700680732727051,
+      "max": 0.6694440841674805
+    },
+    "precontact_root_displacement_m": {
+      "count": 1024,
+      "mean": 0.04430042952299118,
+      "p50": 0.037310246378183365,
+      "p90": 0.07894415408372879,
+      "p95": 0.08568781614303589,
+      "max": 0.16849276423454285
+    },
+    "capture_point_overflow_m": {
+      "count": 1024,
+      "mean": 0.12590450048446655,
+      "p50": 0.12208032608032227,
+      "p90": 0.16919714212417603,
+      "p95": 0.18080192804336548,
+      "max": 0.2840784788131714
+    },
+    "max_contact_foot_slip_m_s": {
+      "count": 1024,
+      "mean": 1.1069961786270142,
+      "p50": 1.0514860153198242,
+      "p90": 1.5241804122924805,
+      "p95": 1.7773571014404297,
+      "max": 2.391091823577881
+    },
+    "failure_nonfoot_ground": {
+      "count": 1024,
+      "mean": 0.0,
+      "p50": 0.0,
+      "p90": 0.0,
+      "p95": 0.0,
+      "max": 0.0
+    },
+    "failure_height": {
+      "count": 1024,
+      "mean": 0.0,
+      "p50": 0.0,
+      "p90": 0.0,
+      "p95": 0.0,
+      "max": 0.0
+    },
+    "failure_tilt": {
+      "count": 1024,
+      "mean": 0.0,
+      "p50": 0.0,
+      "p90": 0.0,
+      "p95": 0.0,
+      "max": 0.0
+    },
+    "failure_workspace": {
+      "count": 1024,
+      "mean": 0.0,
+      "p50": 0.0,
+      "p90": 0.0,
+      "p95": 0.0,
+      "max": 0.0
+    },
+    "failure_emergency_force": {
+      "count": 1024,
+      "mean": 0.0,
+      "p50": 0.0,
+      "p90": 0.0,
+      "p95": 0.0,
+      "max": 0.0
+    },
+    "travel_limit_reached": {
+      "count": 1024,
+      "mean": 0.0,
+      "p50": 0.0,
+      "p90": 0.0,
+      "p95": 0.0,
+      "max": 0.0
+    },
+    "failure_joint": {
+      "count": 1024,
+      "mean": 0.0,
+      "p50": 0.0,
+      "p90": 0.0,
+      "p95": 0.0,
+      "max": 0.0
+    },
+    "failure_nan": {
+      "count": 1024,
+      "mean": 0.0,
+      "p50": 0.0,
+      "p90": 0.0,
+      "p95": 0.0,
+      "max": 0.0
+    },
+    "smp_reward_mean": {
+      "count": 1024,
+      "mean": 0.16791954636573792,
+      "p50": 0.16262954473495483,
+      "p90": 0.21903783082962036,
+      "p95": 0.23022909462451935,
+      "max": 0.2656358480453491
+    },
+    "smp_reward_variance": {
+      "count": 1024,
+      "mean": 0.013818196021020412,
+      "p50": 0.013001480139791965,
+      "p90": 0.019486475735902786,
+      "p95": 0.021302146837115288,
+      "max": 0.028446746990084648
+    },
+    "termination/time_out": {
+      "count": 1024,
+      "mean": 0.98828125,
+      "p50": 1.0,
+      "p90": 1.0,
+      "p95": 1.0,
+      "max": 1.0
+    },
+    "termination/self_collision": {
+      "count": 1024,
+      "mean": 0.01171875,
+      "p50": 0.0,
+      "p90": 0.0,
+      "p95": 0.0,
+      "max": 1.0
+    },
+    "termination/nonfoot_ground": {
+      "count": 1024,
+      "mean": 0.0,
+      "p50": 0.0,
+      "p90": 0.0,
+      "p95": 0.0,
+      "max": 0.0
+    },
+    "termination/root_height": {
+      "count": 1024,
+      "mean": 0.0,
+      "p50": 0.0,
+      "p90": 0.0,
+      "p95": 0.0,
+      "max": 0.0
+    },
+    "termination/torso_tilt": {
+      "count": 1024,
+      "mean": 0.0,
+      "p50": 0.0,
+      "p90": 0.0,
+      "p95": 0.0,
+      "max": 0.0
+    },
+    "termination/workspace": {
+      "count": 1024,
+      "mean": 0.0,
+      "p50": 0.0,
+      "p90": 0.0,
+      "p95": 0.0,
+      "max": 0.0
+    },
+    "termination/emergency_force": {
+      "count": 1024,
+      "mean": 0.0,
+      "p50": 0.0,
+      "p90": 0.0,
+      "p95": 0.0,
+      "max": 0.0
+    },
+    "termination/joint_hard_limit": {
+      "count": 1024,
+      "mean": 0.0,
+      "p50": 0.0,
+      "p90": 0.0,
+      "p95": 0.0,
+      "max": 0.0
+    },
+    "termination/nan_or_inf": {
+      "count": 1024,
+      "mean": 0.0,
+      "p50": 0.0,
+      "p90": 0.0,
+      "p95": 0.0,
+      "max": 0.0
+    },
+    "failure_nonmechanical_union": {
+      "count": 1024,
+      "mean": 0.0,
+      "p50": 0.0,
+      "p90": 0.0,
+      "p95": 0.0,
+      "max": 0.0
+    },
+    "episode_length_s": {
+      "count": 1024,
+      "mean": 11.864433288574219,
+      "p50": 12.0,
+      "p90": 12.0,
+      "p95": 12.0,
+      "max": 12.0
+    }
+  },
+  "gate": {
+    "passed": true,
+    "checks": {
+      "event_success_rate_ge_0.50": true,
+      "emergency_rate_le_0.10": true,
+      "nonmechanical_failure_rate_le_0.05": true
+    }
+  }
+}

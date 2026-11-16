@@ -1,0 +1,201 @@
+{
+  "schema_version": 1,
+  "status": "evaluated",
+  "bundle_name": "chest_speed_gradient_v1",
+  "experiment_id": "EXP-022",
+  "created_at_utc": "2026-11-16T08:35:13.397112+00:00",
+  "task_id": "Smp-Force-Unloading-G1",
+  "training_stage": "c",
+  "checkpoint_iteration": 31995,
+  "code": {
+    "repository": "https://github.com/qc-1/smp",
+    "runtime_commit": "b3b95a12b86f7a9fca697626d1640e33bedf1167",
+    "runtime_files_sha256": {
+      "pyproject.toml": "3eed44e0fad38ed5eee1d68302d0cd9db5a7bd139c0eab4910d70cb316cf86e4",
+      "uv.lock": "3ff6af0db2bc8ab270edb60feee67741da2faa940786aa2b2710d4cac1dd9216",
+      "scripts/evaluate_force_unloading.py": "2ec78d51f855ff6b735e7c8840cea1ac810489c8efdaa171bba1dcf1ac5ea886",
+      "src/smp/rl/rl_cfg.py": "bf5f055da54d2a84bc922ae0c2413167a95d2183b7cd1f366012a47e6eebb854",
+      "src/smp/rl/events.py": "bcaf41ef4460ec657538748f19b16ddf3c15be4dedee1ed623a64f28879263d2",
+      "src/smp/rl/rewards.py": "73a20a42afdd2c6d12f7f9842458a1c76360578c44623c7eac50941690a0ade1",
+      "src/smp/rl/utils.py": "3419e31dd3fa0b1eaf0d0a969bc665af4352ce15af4eb7052255847900cba957",
+      "src/smp/rl/tasks/force_unloading/force_unloading_env_cfg.py": "1d083034c6c6eb9e28fe4ffee8f85050690d95a6c31c867cd32d7c3d7998e8be",
+      "src/smp/rl/tasks/force_unloading/mdp/controller.py": "da6bd9039838696a53ebb5fcfe32dc3cb86bdd348c675b662948df173bf265e0",
+      "src/smp/rl/tasks/force_unloading/mdp/terms.py": "c56aac5283443707e73aa6f3efebc9462afa3aabdc1ef5568c10a84a91d27837"
+    },
+    "training_commit": "28d1dfd1b7b4447977fbdb2062167d9f87a2faaa",
+    "training_code_dirty": true,
+    "training_code_snapshot": "training_source.diff",
+    "snapshot_contains_untracked_sources": false
+  },
+  "artifacts": {
+    "policy": {
+      "file": "policy.pt",
+      "sha256": "82ddfe95ee383cd4cf62c65d6f080a46138ad43fbdd92f19e28d9272ea4e0d33",
+      "bytes": 10917700,
+      "original_name": "model_31995.pt",
+      "source_path": "/root/smp/logs/reproduction/rsl_rl/smp_force_unloading_g1/2026-11-10_17-32-59_gsi015_decay10_static80_r010_v005_010_020_chest_c_seed42/model_31995.pt"
+    },
+    "prior": {
+      "file": "prior.pt",
+      "sha256": "2f9682f9d1e3e4a5298576f637736345e69fe9fea510992d4b9f7afd5f430dec",
+      "bytes": 2808245,
+      "original_name": "pretrained_lafan_low_speed_static80.pt",
+      "source_path": "/root/smp/datasets/pretrain_ckpt/pretrained_lafan_low_speed_static80.pt"
+    },
+    "score_calibration": null,
+    "environment_config": {
+      "file": "env.yaml",
+      "sha256": "d22a7b561261b96dd822a5b42906cf79de24a96fd7f9d7266a642dd7f5540747",
+      "bytes": 31480,
+      "original_name": "env.yaml",
+      "source_path": "/root/smp/logs/reproduction/rsl_rl/smp_force_unloading_g1/2026-11-10_17-32-59_gsi015_decay10_static80_r010_v005_010_020_chest_c_seed42/params/env.yaml"
+    },
+    "agent_config": {
+      "file": "agent.yaml",
+      "sha256": "2be00b89736b96d4bb75403c9a0777e38b100989bc926fcbea4422fb72707836",
+      "bytes": 1442,
+      "original_name": "agent.yaml",
+      "source_path": "/root/smp/logs/reproduction/rsl_rl/smp_force_unloading_g1/2026-11-10_17-32-59_gsi015_decay10_static80_r010_v005_010_020_chest_c_seed42/params/agent.yaml"
+    },
+    "training_record": {
+      "file": "training.json",
+      "sha256": "43e44931c90bd0f1d014e13e36b109a800d39746e1d702da55d529a3a75d0ae1",
+      "bytes": 8047
+    },
+    "training_source_diff": {
+      "file": "training_source.diff",
+      "sha256": "1602351cbb18838caf240d7652e92b2ac16dfad03fe29e0e8ac032e6b1135c8f",
+      "bytes": 34063,
+      "original_name": "smp.diff",
+      "source_path": "/root/smp/logs/reproduction/rsl_rl/smp_force_unloading_g1/2026-11-10_17-32-59_gsi015_decay10_static80_r010_v005_010_020_chest_c_seed42/git/smp.diff"
+    },
+    "prior_metadata": {
+      "file": "prior.metadata.json",
+      "sha256": "65641223531050572e1cd9a3939f39681d80d6fa1083ad365a09232b581d522d",
+      "bytes": 2173,
+      "original_name": "pretrained_lafan_low_speed_static80.metadata.json",
+      "source_path": "/root/smp/datasets/pretrain_ckpt/pretrained_lafan_low_speed_static80.metadata.json"
+    },
+    "evaluation_config": {
+      "file": "eval_config.json",
+      "sha256": "0ae690af3e70fc6a24724544f733938eddca47e108c1432d54f0e6b0bd24546a",
+      "bytes": 963
+    },
+    "evaluation_report": {
+      "file": "evaluation.json",
+      "sha256": "9e38b2f93af4a765b0017fd3cd6347686e31bb8769c9d2766c5ee53b47623638",
+      "bytes": 7060,
+      "original_name": "speed_chest_model31995_chest.json",
+      "source_path": "/personal_fast_storage/smp_experiments/formal_evaluation_20261112/reports/speed_chest_model31995_chest.json"
+    },
+    "evaluation_script": {
+      "file": "evaluate.sh",
+      "sha256": "4197cf0a59086f5d508a8dc0494f42bdca173f9afb1a5435689b1d2a6e6dd2aa",
+      "bytes": 1297
+    }
+  },
+  "normalization": {
+    "actor_observations": {
+      "source": "policy.pt:actor_state_dict.obs_normalizer",
+      "mean_shape": [
+        1,
+        128
+      ],
+      "restore": "Load the complete Actor state dict, including obs_normalizer.*."
+    },
+    "critic_observations": {
+      "source": "policy.pt:critic_state_dict.obs_normalizer",
+      "mean_shape": [
+        1,
+        992
+      ]
+    },
+    "smp_features": {
+      "source": "prior.pt:q_low,q_high",
+      "window_shape": [
+        10,
+        59
+      ]
+    },
+    "smp_reward": "Unconditional runtime online DiffNormalizer; no frozen score calibration artifact."
+  },
+  "model": {
+    "actor_input_dim": 128,
+    "critic_input_dim": 992,
+    "action_dim": 29,
+    "hidden_dims": [
+      512,
+      256,
+      128
+    ],
+    "activation": "elu",
+    "checkpoint_keys": [
+      "actor_state_dict",
+      "critic_state_dict",
+      "optimizer_state_dict",
+      "iter",
+      "infos"
+    ]
+  },
+  "force_interface": {
+    "observation_schema": [
+      "active",
+      "force_normalized",
+      "direction_local_x",
+      "direction_local_y",
+      "direction_local_z",
+      "position_local_x",
+      "position_local_y",
+      "position_local_z"
+    ],
+    "coordinate_frame": "Current root heading frame; contact position relative to root.",
+    "units": {
+      "force_before_normalization": "N",
+      "position": "m",
+      "direction": "unit vector"
+    },
+    "force_definition": "Aggregated contact normal force, substep-averaged then EMA-filtered.",
+    "force_normalization": "clip(F_filtered / (M_robot * g), 0, 0.4)",
+    "control_dt_s": 0.02,
+    "history_length": 4,
+    "no_contact": "All eight contact observation fields are zero."
+  },
+  "evaluation": {
+    "source": "evaluation.json",
+    "historical_report_created_at_utc": "2026-11-12T04:35:22.419751+00:00",
+    "seed": 42,
+    "num_episodes": 1024,
+    "num_envs": 256,
+    "reference_speed_m_s": 0.2,
+    "gate_passed": true,
+    "gate": {
+      "passed": true,
+      "checks": {
+        "event_success_rate_ge_0.50": true,
+        "emergency_rate_le_0.10": true,
+        "nonmechanical_failure_rate_le_0.05": true
+      }
+    },
+    "metrics": {
+      "event_success_rate": 0.98828125,
+      "emergency_force_termination_rate": 0.0,
+      "self_collision_termination_rate": 0.01171875,
+      "joint_limit_termination_rate": 0.0,
+      "peak_force_weight_ratio_p95": 0.38259249925613403,
+      "contact_foot_slip_p95_m_s": 1.7773571014404297,
+      "precontact_speed_p95_m_s": 0.3700680732727051
+    },
+    "limitations": [
+      "Noticeable contact foot slip and precontact speed tails.",
+      "Chest force-unloading baseline; shoulder-directed yaw is not validated by this experiment.",
+      "Historical statistics are reused; no new GPU rollout was run for this handoff."
+    ]
+  },
+  "handoff_verification": {
+    "weights_copied_byte_for_byte": true,
+    "policy_tensors_finite_cpu": true,
+    "prior_metadata_verification": "SHA-256, existing JSON sidecar, and non-executing pickle opcode inspection.",
+    "evaluation_cli_arguments_parsed": true,
+    "new_gpu_rollout_run": false
+  }
+}
