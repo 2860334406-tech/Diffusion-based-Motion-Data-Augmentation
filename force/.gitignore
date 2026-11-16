@@ -1,0 +1,7 @@
+# Versioned handoff checkpoints are intentionally tracked here.
+!*.pt
+!*.pth
+!*.ckpt
+
+*.tmp
+*.partial

@@ -1,0 +1,40 @@
+{
+  "definition": "Physical contact onset from physical_contact_any; active true force >=10 N; zero true force <1 N; direction undefined if estimate <1 N. Per-episode ID is run_id without trailing :step.",
+  "sources": {
+    "chest_back_locked": {
+      "/media/lzx/Lexar/datasets/force_estimator/Route_B_SuperMimic/v392_final_test/cache/test.npz": "f1445c05ce04abcb217479f148a927bddde14d750f235dca5e2575085a25e6f4",
+      "/media/lzx/Lexar/datasets/force_estimator/Route_B_SuperMimic/v392_final_test/evaluations/test/v315/test_predictions.npz": "9aa1778b14785a6d911333b9b6b0965a0918ea5148e6d95340cc7909a86d061a",
+      "/media/lzx/Lexar/datasets/force_estimator/Route_B_SuperMimic/v392_final_test/evaluations/test/v338/test_predictions.npz": "e80d4dc64e1cdabea94f38882019d8b4baea728ed749a620f7628e61584fe35c",
+      "/media/lzx/Lexar/datasets/force_estimator/Route_B_SuperMimic/v392_final_test/evaluations/test/v35/test_predictions.npz": "498ab92d46a06942535b83a2b923a3470684e67e6cdd0f609d5c8f2c6f494715",
+      "/media/lzx/Lexar/datasets/force_estimator/Route_B_SuperMimic/v392_final_test/evaluations/test/v357/test_predictions.npz": "77abfa1dee86dba0e99e13d22ab20388e1aca30614bc3f74d9508eeecf55a7cc",
+      "/media/lzx/Lexar/datasets/force_estimator/Route_B_SuperMimic/v392_final_test/evaluations/test/v382/test_predictions.npz": "894687568029a6075b2b523b94f77a596dc5ce4741868e55a7dd6f1f1e4ab155",
+      "/media/lzx/Lexar/datasets/force_estimator/Route_B_SuperMimic/v392_final_test/evaluations/v392/test_predictions.npz": "24c1f2cb8a7634c6f8c65dc290d70f730cb58101aab7dbcd60312c59cfc2aa0e"
+    },
+    "shoulder_holdout": {
+      "/media/lzx/Lexar/datasets/force_estimator/Route_B_SuperMimic/v385_shoulder_holdout/cache/test.npz": "017223aecea6f4835d5fe8009dec3d5c27c6ff750d9256c4576b855c0fa78084",
+      "/media/lzx/Lexar/datasets/force_estimator/Route_B_SuperMimic/v385_shoulder_holdout/evaluations/test/v315/test_predictions.npz": "7fc356bc4325eb77124ecb6b3bcef11e5dceda965ee7766073098fc12c0e9305",
+      "/media/lzx/Lexar/datasets/force_estimator/Route_B_SuperMimic/v385_shoulder_holdout/evaluations/test/v338/test_predictions.npz": "0224dfd2fc13c9cbcf37960f75af5f4bf5a04265d89b1796adcc4907e704c5b5",
+      "/media/lzx/Lexar/datasets/force_estimator/Route_B_SuperMimic/v385_shoulder_holdout/evaluations/test/v35/test_predictions.npz": "c9b518e4e6f9c0a97bb9b58425f9089f00567a631cca3e0afbc403eb6aef682b",
+      "/media/lzx/Lexar/datasets/force_estimator/Route_B_SuperMimic/v385_shoulder_holdout/evaluations/test/v357/test_predictions.npz": "63b69c5dc60c683bb1e4e8b5014e72e9bb97ba16cb4f05269ac086b3ce1e227c",
+      "/media/lzx/Lexar/datasets/force_estimator/Route_B_SuperMimic/v385_shoulder_holdout/evaluations/test_v382/test_predictions.npz": "0df5d496f6cf7a3794c97af2db59ef8c2da165c8ef0ead565e2126d509cbf6e5"
+    },
+    "right_shoulder_clearance": {
+      "/media/lzx/Lexar/datasets/force_estimator/Route_B_SuperMimic/v395_right_shoulder_clearance/cache/test.npz": "0e96d4cf3f39e6f78f9a40c30519556e151b4994aa2ea5fbe780e6eb45ad6bd4",
+      "/media/lzx/Lexar/datasets/force_estimator/Route_B_SuperMimic/v395_right_shoulder_clearance/evaluations/test/v315/test_predictions.npz": "2c3258df4150ce8b42bee4e21123e7313de4cd9e34dc3bd510b8eaf4fc241264",
+      "/media/lzx/Lexar/datasets/force_estimator/Route_B_SuperMimic/v395_right_shoulder_clearance/evaluations/test/v338/test_predictions.npz": "bf61c8e8a5d553da13ef33e686c3786cf3807ba0a16550db18b302152d6f9a59",
+      "/media/lzx/Lexar/datasets/force_estimator/Route_B_SuperMimic/v395_right_shoulder_clearance/evaluations/test/v35/test_predictions.npz": "58aa97b3859a458dcd2cb9ca319b7c93a942ead9010f560a2b1433f198a1830b",
+      "/media/lzx/Lexar/datasets/force_estimator/Route_B_SuperMimic/v395_right_shoulder_clearance/evaluations/test/v357/test_predictions.npz": "44d791dc8b737fe93648733fe3368b42142dd0104ebd7beeeed9686ad3e85b10",
+      "/media/lzx/Lexar/datasets/force_estimator/Route_B_SuperMimic/v395_right_shoulder_clearance/evaluations/test/v382/test_predictions.npz": "71a8943378c7bff9e4f1dd61f407cfa6488e191ba6cfc8aafa13250433a257ef",
+      "/media/lzx/Lexar/datasets/force_estimator/Route_B_SuperMimic/v395_right_shoulder_clearance/evaluations/test/v392/test_predictions.npz": "71a8943378c7bff9e4f1dd61f407cfa6488e191ba6cfc8aafa13250433a257ef"
+    },
+    "six_ball_contacts": {
+      "/media/lzx/Lexar/files/中关村相关/力估计器结果/2026-11-15_球头接触_六方向_随机点/cache/test.npz": "6a922b54be603f2728fc9af278dfd3a5b4292f325380755b1a7ae401e139d8d2",
+      "/media/lzx/Lexar/files/中关村相关/力估计器结果/2026-11-15_球头接触_六方向_随机点/evaluations/test/v315/test_predictions.npz": "032e3e32c87c0a0203ab06529f69e635ec83e401c491d3dc72da1e54b678cfea",
+      "/media/lzx/Lexar/files/中关村相关/力估计器结果/2026-11-15_球头接触_六方向_随机点/evaluations/test/v338/test_predictions.npz": "1c88f239de6a5b2b294abec3bd01a766ab8f85db2abe2f8e55a575a676921944",
+      "/media/lzx/Lexar/files/中关村相关/力估计器结果/2026-11-15_球头接触_六方向_随机点/evaluations/test/v35/test_predictions.npz": "51ad62688c9f04f66193f76ec97e60f25d776170988283cb2c2d8d65d284262c",
+      "/media/lzx/Lexar/files/中关村相关/力估计器结果/2026-11-15_球头接触_六方向_随机点/evaluations/test/v357/test_predictions.npz": "6c95c938f7885ebbc53642ea57fec1d2888b0f7cefb561cff24fb6402f29fa2e",
+      "/media/lzx/Lexar/files/中关村相关/力估计器结果/2026-11-15_球头接触_六方向_随机点/evaluations/test/v382/test_predictions.npz": "e6c722c66a55536f87e9ec1770dbaa2006067fa789aeb51bb197d16c3ed13368",
+      "/media/lzx/Lexar/files/中关村相关/力估计器结果/2026-11-15_球头接触_六方向_随机点/evaluations/test/v392/test_predictions.npz": "e6c722c66a55536f87e9ec1770dbaa2006067fa789aeb51bb197d16c3ed13368"
+    }
+  }
+}

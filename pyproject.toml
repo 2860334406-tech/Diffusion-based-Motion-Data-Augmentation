@@ -19,6 +19,12 @@ dependencies = [
   "mink==1.4.0 ; python_full_version >= '3.11'",
 ]
 
+[project.optional-dependencies]
+force-estimator = [
+  "joblib==1.5.3",
+  "scikit-learn==1.9.0 ; python_version >= '3.11'",
+]
+
 [dependency-groups]
 dev = [
   "ruff>=0.14.14",

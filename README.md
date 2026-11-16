@@ -33,6 +33,26 @@ points its `init_smp_state` event at the right one, so no setup is needed:
 | `pretrained_lafan_run.pt`        | LAFAN run subset      | `Smp-Steering-G1`, `Smp-Location-G1` |
 | `pretrained_getup_f2s2.pt`       | get-up (fall→stand)   | `Smp-Getup-G1`                   |
 
+## Frozen G1 contact-force estimator
+
+The repository also includes a **loadable, frozen V3.92 force-estimator bundle**
+in `force/v392/`. It is separate from the SMP motion
+priors above. The loader verifies the bundled weight hashes and exposes the
+V3.57, V3.82, and V3.92 outputs from the same causal model chain:
+
+```bash
+uv run --extra force-estimator scripts/smoke_force_estimator.py
+```
+
+The input is the original SuperMimic 50 Hz, term-major 930D observation plus
+ten aligned 29D actuator-force samples. The output is a three-dimensional
+contact-force estimate in the `torso_link` frame. V3.92 also requires the known
+target site (chest, left shoulder, right shoulder, or back). The current SMP
+actor and critic observations have a different layout, so this loader is **not
+yet connected** to `Smp-Force-Unloading-G1` or its rewards. See
+[the force-estimator interface and evaluation](force/v392/README.md) for
+the exact input contract, model selection, replay check, and limitations.
+
 ## Setup
 
 [`uv`](https://docs.astral.sh/uv/) is the canonical package manager; dependencies

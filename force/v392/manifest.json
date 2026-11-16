@@ -1,0 +1,86 @@
+{
+  "name": "G1 physical-ball force estimator V3.92",
+  "scope": "standing SuperMimic simulated rail-sphere contact; frozen V3.57 + V3.82 + V3.92",
+  "input": "50 Hz SuperMimic term-major x[930] and aligned tau_hist[10,29]; V3.92 also requires known target_site_id",
+  "output": "3D resultant force in post-step torso_link coordinates, newtons; contact probability and point are inherited from base",
+  "sha256": {
+    "base.pt": "e890faff601418a2eb9aa281a46401a6827631da8e862cc5b7840ed4f4423cbf",
+    "benefit_gate.joblib": "6253b0b156d15a0c7d10011b4e3f1d08820d858be38ebcbb3107f0c4562a0352",
+    "calibrator.joblib": "676e52ba960c6bb77285eb05f401e0418e1522b68405e55fcf4204fd396f865b",
+    "force_control_v391.pt": "d8e10b730e542d4ff2aa9df1bef09e6170914cfb531afaf76bc094e6d7d13b55",
+    "lowp_classifier.joblib": "98778440a1233f8b07d44e1d22a47cea450763ed778ae89bb056f50ee35e0af5",
+    "lowp_force_head.joblib": "fd4865c14fd30c556a931ef21b214650971254d774841d24f2c7cade8b514f7d",
+    "region_classifier.joblib": "bad0c7e7727db8b20c6fcc7fef4bb615dce5aa1ba4f27bf97f25d8082355c18d",
+    "region_norms.npz": "16e39d8eb54d30b272db587561ca1d70cdb2534b6b42caf048d50b8289e3bf68",
+    "residual_v338.pt": "7b4d18046fa41114535e6de4ee04d3138f59554b923dd0aa070c09168ca67ea4",
+    "residual_v370.pt": "93593a9bb4d3c0040f3c3a2101051bc5c9ebad96cacae600f96be26d26b4a85a"
+  },
+  "schema_version": 1,
+  "status": "load_and_replay_verified; policy_integration_not_done",
+  "bundle_name": "g1_ball_contact_force_v392",
+  "code": {
+    "repository": "https://github.com/qc-1/smp",
+    "branch": "integration/force",
+    "runtime_base_commit": "90efca2",
+    "runtime_files": [
+      "src/smp/force_estimation/_dual_vae.py",
+      "src/smp/force_estimation/_components.py",
+      "src/smp/force_estimation/streaming.py"
+    ],
+    "training_commit": null,
+    "training_source": "separate SuperMimic force-estimator experiments; original checkpoints are unchanged"
+  },
+  "components": {
+    "v357": [
+      "base.pt",
+      "calibrator.joblib",
+      "residual_v338.pt",
+      "lowp_classifier.joblib",
+      "lowp_force_head.joblib"
+    ],
+    "v382": [
+      "residual_v370.pt",
+      "benefit_gate.joblib"
+    ],
+    "v392": [
+      "force_control_v391.pt",
+      "region_classifier.joblib",
+      "region_norms.npz"
+    ]
+  },
+  "force_interface": {
+    "x_shape": [
+      930
+    ],
+    "tau_hist_shape": [
+      10,
+      29
+    ],
+    "control_dt_s": 0.02,
+    "output_force_frame": "post-step torso_link",
+    "output_force_unit": "N",
+    "target_site_ids": {
+      "chest": 0,
+      "left_shoulder": 1,
+      "right_shoulder": 2,
+      "back": 3
+    },
+    "contact_labels_used_at_inference": false
+  },
+  "evaluation": {
+    "episode_csv": "evaluation/candidate_episode_metrics.csv",
+    "summary_json": "evaluation/candidate_summary.json",
+    "source_manifest_json": "evaluation/source_manifest.json",
+    "locked_chest_back_episodes": 56,
+    "load_parity_full_episodes": 3,
+    "force_max_component_difference_n": 0.00025,
+    "policy_integration_evaluated": false
+  },
+  "limitations": [
+    "standing SuperMimic simulation with physical ball rail",
+    "not a validated SMP 930D observation adapter",
+    "torso_link full 3D force differs from policy heading-frame filtered normal-force input",
+    "single-ball and fixed standing policy only",
+    "one left-shoulder rear-push frame has 1149 N vector error"
+  ]
+}
