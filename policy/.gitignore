@@ -1,0 +1,8 @@
+# Checkpoints in a versioned handoff bundle are intentionally tracked.
+!*.pt
+!*.pth
+!*.ckpt
+
+# Incomplete uploads and temporary copies stay local.
+*.tmp
+*.partial

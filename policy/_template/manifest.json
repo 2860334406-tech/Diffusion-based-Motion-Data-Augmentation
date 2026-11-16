@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "status": "template",
+  "bundle_name": "REPLACE_WITH_VERSION",
+  "experiment_id": null,
+  "task_id": null,
+  "training_stage": null,
+  "code": {
+    "repository": "https://github.com/qc-1/smp",
+    "runtime_commit": null,
+    "training_commit": null,
+    "training_code_dirty": null,
+    "training_code_snapshot": null
+  },
+  "artifacts": {
+    "policy": {
+      "file": "policy.pt",
+      "original_name": null,
+      "sha256": null
+    },
+    "prior": {
+      "file": "prior.pt",
+      "original_name": null,
+      "sha256": null
+    },
+    "score_calibration": null,
+    "environment_config": {
+      "file": "env.yaml",
+      "sha256": null
+    },
+    "agent_config": {
+      "file": "agent.yaml",
+      "sha256": null
+    },
+    "evaluation_report": {
+      "file": "evaluation.json",
+      "sha256": null
+    }
+  },
+  "normalization": {
+    "actor_observations": null,
+    "smp_features": null
+  },
+  "force_interface": {
+    "observation_schema": null,
+    "coordinate_frame": null,
+    "units": null,
+    "control_dt_s": null,
+    "history_length": null
+  },
+  "evaluation": {
+    "seed": null,
+    "num_episodes": null,
+    "gate_passed": null,
+    "metrics": {},
+    "limitations": []
+  }
+}
