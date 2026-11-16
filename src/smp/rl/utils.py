@@ -28,6 +28,9 @@ def load_denoiser(
 
   ckpt: dict[str, Any] = torch.load(ckpt_path, map_location=device, weights_only=False)
   cfg = ckpt["cfg"]
+  if cfg.get("num_conditions", 0):
+    from smp.pretrain.schema import validate_schema
+    validate_schema(ckpt.get("condition_schema"), int(cfg["num_conditions"]))
   feature_dim = int(cfg["feature_dim"])
   window_size = int(cfg["window_size"])
 
@@ -38,9 +41,13 @@ def load_denoiser(
     nhead=int(cfg.get("nhead", 8)),
     num_layers=int(cfg.get("num_layers", 2)),
     dropout=float(cfg.get("dropout", 0.0)),
+    num_conditions=int(cfg.get("num_conditions", 0)),
   ).to(device)
   state = ckpt.get("model_ema") or ckpt["model"]
   model.load_state_dict(state)
+  model.condition_schema = ckpt.get("condition_schema")
+  if cfg.get("num_conditions", 0) and not all(torch.isfinite(p).all() for p in model.parameters()):
+    raise ValueError("Nonfinite conditional prior parameters")
   model.eval()
   model.requires_grad_(False)
 

@@ -29,7 +29,7 @@ points its `init_smp_state` event at the right one, so no setup is needed:
 
 | Checkpoint                       | Trained on            | Used by                          |
 | -------------------------------- | --------------------- | -------------------------------- |
-| `pretrained_loco.pt`             | walk / jog / run      | `Smp-Forward-G1`                 |
+| `pretrained_loco.pt`             | walk / jog / run      | `Smp-Forward-G1`, `Smp-Force-Unloading-G1` |
 | `pretrained_lafan_run.pt`        | LAFAN run subset      | `Smp-Steering-G1`, `Smp-Location-G1` |
 | `pretrained_getup_f2s2.pt`       | get-up (fall→stand)   | `Smp-Getup-G1`                   |
 
@@ -158,7 +158,7 @@ uv run scripts/pretrain.py --data-dir datasets/npz/forward/ --num-layers 2 --no-
 
 ## RL
 
-Four downstream tasks are registered with `mjlab.tasks.registry` (importing
+Five downstream tasks are registered with `mjlab.tasks.registry` (importing
 `smp.rl.tasks` self-registers them):
 
 | Task              | Demo | Description                              |
@@ -167,6 +167,7 @@ Four downstream tasks are registered with `mjlab.tasks.registry` (importing
 | `Smp-Steering-G1` | <img src="https://raw.githubusercontent.com/SUZ-tsinghua/smp/assets/steering.gif" width="200"/> | track a commanded velocity + facing direction |
 | `Smp-Location-G1` | <img src="https://raw.githubusercontent.com/SUZ-tsinghua/smp/assets/location.gif" width="200"/> | walk to a world-frame xy goal |
 | `Smp-Getup-G1`    | <img src="https://raw.githubusercontent.com/SUZ-tsinghua/smp/assets/getup.gif" width="200"/> | stand up from a fallen pose |
+| `Smp-Force-Unloading-G1` | — | unload a rail-mounted spherical pusher while staying balanced |
 
 ### Train / play
 

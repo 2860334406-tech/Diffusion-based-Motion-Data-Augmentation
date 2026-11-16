@@ -50,8 +50,11 @@ class _AdaLayerNormSingle(nn.Module):
     self.silu = nn.SiLU()
     self.linear = nn.Linear(embedding_dim, 6 * embedding_dim, bias=True)
 
-  def forward(self, t: torch.Tensor) -> torch.Tensor:
-    t_emb = self.timestep_embedder(self.time_proj(t)).unsqueeze(1)
+  def forward(self, t: torch.Tensor, condition_embedding: torch.Tensor | None = None) -> torch.Tensor:
+    t_emb = self.timestep_embedder(self.time_proj(t))
+    if condition_embedding is not None:
+      t_emb = t_emb + condition_embedding
+    t_emb = t_emb.unsqueeze(1)
     return self.linear(self.silu(t_emb))
 
 
@@ -179,10 +182,15 @@ class DiffusionDenoiser(nn.Module):
     num_layers: int = 2,
     dropout: float = 0.0,
     head_dim: int | None = None,
+    num_conditions: int = 0,
   ) -> None:
     super().__init__()
     self.feature_dim = feature_dim
     self.window_size = window_size
+    if num_conditions < 0:
+      raise ValueError("num_conditions must be non-negative")
+    self.num_conditions = num_conditions
+    self.null_condition_id = num_conditions
 
     if head_dim is None:
       if d_model % nhead != 0:
@@ -205,6 +213,9 @@ class DiffusionDenoiser(nn.Module):
     self.preprocess_conv = nn.Conv1d(feature_dim, feature_dim, 1, bias=False)
     self.proj_in = nn.Linear(feature_dim, self.inner_dim, bias=False)
     self.adaln_single = _AdaLayerNormSingle(self.inner_dim)
+    self.condition_embedding = (
+      nn.Embedding(num_conditions + 1, self.inner_dim) if num_conditions else None
+    )
     self.sequence_pos_encoder = _SinusoidalPositionalEmbedding(
       self.inner_dim, max_seq_length=max(window_size, 32)
     )
@@ -222,13 +233,25 @@ class DiffusionDenoiser(nn.Module):
     self.proj_out = nn.Linear(self.inner_dim, feature_dim, bias=False)
     self.postprocess_conv = nn.Conv1d(feature_dim, feature_dim, 1, bias=False)
 
-  def forward(self, x_t: torch.Tensor, t: torch.Tensor) -> torch.Tensor:
+  def forward(
+    self, x_t: torch.Tensor, t: torch.Tensor,
+    condition_id: torch.Tensor | None = None,
+  ) -> torch.Tensor:
+    condition_embedding = None
+    if self.condition_embedding is not None:
+      if condition_id is None:
+        raise ValueError("Conditional model requires condition_id; NULL is not stand")
+      if condition_id.shape != t.shape or condition_id.dtype != torch.long:
+        raise ValueError("condition_id must be a long tensor of shape (B,)")
+      condition_embedding = self.condition_embedding(condition_id)
+    elif condition_id is not None:
+      raise ValueError("Unconditional model does not accept condition_id")
     h = x_t.transpose(1, 2)
     h = self.preprocess_conv(h) + h
     h = h.transpose(1, 2)
 
     h = self.proj_in(h)
-    time_hidden_states = self.adaln_single(t)
+    time_hidden_states = self.adaln_single(t, condition_embedding)
     h = self.sequence_pos_encoder(h)
 
     for block in self.blocks:

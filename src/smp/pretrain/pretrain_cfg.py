@@ -16,6 +16,8 @@ class PretrainCfg:
   norm_stats_file: str = "datasets/norm_stats.npz"
   """Path to q01/q99 quantile stats from compute_norm_stats.py."""
   train_split: float = 0.9
+  sampling_manifest_file: str = ""
+  """Optional exact category-ratio sampling manifest (JSON)."""
 
   # Model. ``d_model = nhead · head_dim`` is the DiT inner dim; FF inner
   # dim is fixed at 4·d_model.
@@ -48,6 +50,8 @@ class PretrainCfg:
   log_dir: str = "logs/pretrain"
   wandb_project: str = "smp"
   use_wandb: bool = True
+  upload_model: bool = False
+  """Upload checkpoint files to W&B in addition to scalar logs."""
 
   # Device
   device: str = ""

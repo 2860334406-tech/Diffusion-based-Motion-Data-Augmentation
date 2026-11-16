@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "description": "Exact per-epoch 80/20 stand/dynamic sampling for the LAFAN low-speed prior.",
+  "samples_per_epoch": 3360,
+  "category_fractions": {
+    "stand": 0.8,
+    "dynamic": 0.2
+  },
+  "files": {
+    "dynamic_dance2_s2.npz": "dynamic",
+    "dynamic_dance2_s2_mirror.npz": "dynamic",
+    "dynamic_fight_s4.npz": "dynamic",
+    "dynamic_fight_s4_mirror.npz": "dynamic",
+    "dynamic_jumps1_s5.npz": "dynamic",
+    "dynamic_jumps1_s5_mirror.npz": "dynamic",
+    "dynamic_sprint1_s4.npz": "dynamic",
+    "dynamic_sprint1_s4_mirror.npz": "dynamic",
+    "dynamic_walk3_s2.npz": "dynamic",
+    "dynamic_walk3_s2_mirror.npz": "dynamic",
+    "dynamic_walk4_s1.npz": "dynamic",
+    "dynamic_walk4_s1_mirror.npz": "dynamic",
+    "stand_jumps1_s2.npz": "stand",
+    "stand_jumps1_s2_mirror.npz": "stand",
+    "stand_jumps1_s5_126.npz": "stand",
+    "stand_jumps1_s5_126_mirror.npz": "stand",
+    "stand_sprint1_s2_263.npz": "stand",
+    "stand_sprint1_s2_263_mirror.npz": "stand",
+    "stand_sprint1_s4_61.npz": "stand",
+    "stand_sprint1_s4_61_mirror.npz": "stand",
+    "stand_sprint1_s4_73.npz": "stand",
+    "stand_sprint1_s4_73_mirror.npz": "stand",
+    "stand_walk3_s3_105.npz": "stand",
+    "stand_walk3_s3_105_mirror.npz": "stand"
+  }
+}

@@ -16,3 +16,7 @@ wandb/
 outputs/
 datasets/
 CLAUDE.md
+.pytest_cache/
+*.orig
+*.rej
+MUJOCO_LOG.TXT
