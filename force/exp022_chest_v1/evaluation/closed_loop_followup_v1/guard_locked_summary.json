@@ -1,0 +1,54 @@
+{
+  "oracle": {
+    "episodes": 8,
+    "physical_contact": 7,
+    "event_success": 7,
+    "failure": 1,
+    "precontact_false_active_episodes": 0,
+    "precontact_est_ge10_episodes": 0,
+    "guard_suppressed_frames": 0,
+    "guard_suppressed_true_loaded_frames": 0,
+    "first_loaded_misses": 0,
+    "median_run_loaded_vector_mae_n": 10.443774223327637,
+    "worst_run_loaded_vector_mae_n": 14.816022872924805,
+    "max_gpu_mib": 354
+  },
+  "estimated": {
+    "episodes": 8,
+    "physical_contact": 7,
+    "event_success": 7,
+    "failure": 2,
+    "precontact_false_active_episodes": 0,
+    "precontact_est_ge10_episodes": 0,
+    "guard_suppressed_frames": 0,
+    "guard_suppressed_true_loaded_frames": 0,
+    "first_loaded_misses": 0,
+    "median_run_loaded_vector_mae_n": 10.969258308410645,
+    "worst_run_loaded_vector_mae_n": 14.737573623657227,
+    "max_gpu_mib": 354
+  },
+  "guarded_estimated": {
+    "episodes": 8,
+    "physical_contact": 7,
+    "event_success": 7,
+    "failure": 2,
+    "precontact_false_active_episodes": 0,
+    "precontact_est_ge10_episodes": 0,
+    "guard_suppressed_frames": 0,
+    "guard_suppressed_true_loaded_frames": 0,
+    "first_loaded_misses": 0,
+    "median_run_loaded_vector_mae_n": 10.96875286102295,
+    "worst_run_loaded_vector_mae_n": 14.737421035766602,
+    "max_gpu_mib": 354
+  },
+  "checks": {
+    "all_oracle_contact": false,
+    "guard_false_active_not_more_than_raw": true,
+    "guard_success_not_less_than_raw": true,
+    "guard_failures_not_more_than_raw": true,
+    "guard_first_contact_delay_le1": true
+  },
+  "all_checks_pass": false,
+  "fresh_rule_activated": false,
+  "manifest_pretest_sha256": "98fec01768315236568f9ab44e2741adfc4d1c5c0393bcaf5fc6cc566136e55f"
+}

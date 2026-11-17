@@ -1,0 +1,36 @@
+{
+  "name": "EXP022 large-low-confidence force guard candidate",
+  "status": "frozen before seeds 197-204",
+  "rule": "if ||F_est|| > 40 N and contact_probability < 0.95, emit zero force and zero policy normal force for that control step; otherwise return frozen V1 output",
+  "inputs": "current frozen estimator force and probability only; no physical contact label, pusher schedule, or future state",
+  "model_sha256": "025ab758dee389eae33e7b9fe97419aba7b9d271934e04d513273b9abbf286df",
+  "policy_sha256": "82ddfe95ee383cd4cf62c65d6f080a46138ad43fbdd92f19e28d9272ea4e0d33",
+  "guard_code_sha256": "9f688c0a12433e3e5b83899e1f3bd21fed6bfeb4ddf14ef0af41be19d39ca341",
+  "evaluator_code_sha256": "3ea44781417957d5c2f6315af4c81b0b42222e8955e1211e08f39a3f99b75461",
+  "design_sha256": "16478d5b0d5ae295dadfb531f9de366739a668ef9803651f8a97c0874239ae8c",
+  "development_audit_sha256": "350b064a4951e583ccc195f95704127cd75a7fd210056a08f2712b5ce1cdf206",
+  "locked_seeds": [
+    197,
+    204
+  ],
+  "modes": [
+    "oracle",
+    "estimated",
+    "guarded_estimated"
+  ],
+  "acceptance": {
+    "no_quality_replacement": "retain every seed and mode, including no-contact or terminated episodes",
+    "guard_precontact_false_active_episodes": "<= raw estimated",
+    "guard_event_success": "not fewer than raw estimated",
+    "guard_failure_terminations": "not more than raw estimated",
+    "guard_first_contact_delay_frames": "<= 1 on pairs where both contact",
+    "old_sustained_validation": "zero rule activations in 24 development episodes",
+    "scope": "eight paired original-pusher simulation seeds; no general force-estimator release from one rescue case"
+  },
+  "development": {
+    "inspected_seed181_guarded": "contact 25 frames, event success, no failure, no precontact actor activation; one rule suppression",
+    "new_original_oracle_seeds_189_196": "no rule activations",
+    "old_sustained_validation_157_168": "no rule activations",
+    "old_training": "four activations, three on loaded frames; pooled vector MAE 4.327 to 4.336 N"
+  }
+}
