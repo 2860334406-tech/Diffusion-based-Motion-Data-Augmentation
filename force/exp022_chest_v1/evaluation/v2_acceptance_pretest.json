@@ -1,0 +1,31 @@
+{
+  "purpose": "Independent V2 test for EXP022 front-chest force estimate and the actor's real contact-input threshold",
+  "force_model_sha256": "025ab758dee389eae33e7b9fe97419aba7b9d271934e04d513273b9abbf286df",
+  "candidate_manifest_sha256": "1e7cf7fc4a92df39e858cc081e6a851fc319ba499691868a355cf50494d438a2",
+  "mapping_calibration_sha256": "22f7e8c366b214fb3bafacb07464dcb57f95820c9c7e6d5b49cd8b204ef5160a",
+  "fresh_seeds": [169, 180],
+  "expected_episode_pairs": 12,
+  "quality_rule": "If a seed pair terminates before any contact or has no >=10 N true-force frame, retain its raw record and replace both modes with the first higher seed of the same 8-condition index that passes physics quality, before inspecting estimator outputs",
+  "thresholds": {
+    "median_run_actor_frame_l2_max": 0.25,
+    "median_run_actor_history_l2_max": 0.50,
+    "median_run_direction_deg_max": 12.0,
+    "median_run_point_m_max": 0.05,
+    "median_run_force_obs_mae_n_max": 6.0,
+    "precontact_false_active_episodes_max": 3,
+    "oracle_active_missed_fraction_max": 0.10,
+    "frame_l2_reduction_vs_v392_hybrid_min": 0.50,
+    "force_precontact_max_n_max": 20.0,
+    "force_median_run_loaded_vector_mae_n_max": 15.0,
+    "force_worst_run_loaded_vector_mae_n_max": 45.0,
+    "force_first_loaded_misses_max": 18,
+    "force_median_peak_magnitude_abs_error_n_max": 15.0,
+    "force_median_detected_direction_deg_max": 25.0
+  },
+  "baseline_comparison": {
+    "force_median_run_loaded_vector_mae_reduction_min": 0.50,
+    "force_precontact_worst_reduction_min": 0.90
+  },
+  "status": "frozen before collecting seeds 169-180",
+  "scope": "Simulation front chest sphere contact and EXP022 checkpoint only; no PPO, hardware, multi-contact, or general point-estimation claim"
+}

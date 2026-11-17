@@ -1,0 +1,11 @@
+{
+  "name": "EXP022 chest-only policy normal and point mapping",
+  "status": "frozen for V2 candidate before independent test",
+  "force_model_sha256": "025ab758dee389eae33e7b9fe97419aba7b9d271934e04d513273b9abbf286df",
+  "source_calibration_sha256": "5c7c65f076178cdbd14300c284197cb62c23aa583112ddbe79de8dcba0eec31a",
+  "point_body_m": [0.09976974129676819, -0.0016431163530796766, 0.13540513813495636],
+  "normal_direction_body": [-0.999351441860199, 0.03535478189587593, -0.006837825756520033],
+  "input": "Norm of observable-only three-dimensional force estimate, current torso/root pose",
+  "output": "Chest policy contact normal and point in torso_link; policy 8D/32D adapter supplies EMA and heading transform",
+  "limits": "Fixed front chest sphere geometry under EXP022; no arbitrary contact-point prediction"
+}

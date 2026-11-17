@@ -1,0 +1,187 @@
+{
+  "candidate_summary": {
+    "episodes": 24,
+    "precontact_fp_episodes": 0,
+    "precontact_fp_frames": 0,
+    "precontact_actor_active_episodes": 0,
+    "precontact_actor_active_frames": 0,
+    "zero_force_fp10_frames": 61,
+    "precontact_worst_n": 0.0,
+    "first_loaded_misses": 8,
+    "median_first_loaded_delay_frames": 0.0,
+    "loaded_frames": 2373,
+    "loaded_miss10_frames": 89,
+    "median_run_vector_mae_n": 8.598615169525146,
+    "worst_run_vector_mae_n": 16.282066345214844,
+    "median_run_magnitude_mae_n": 6.728887319564819,
+    "median_detected_direction_deg": 13.392756938934326,
+    "median_peak_magnitude_abs_error_n": 9.69316577911377,
+    "worst_single_loaded_vector_n": 45.61357879638672,
+    "selection_score": 22.840613365309977
+  },
+  "baseline_summary": {
+    "precontact_worst_n": 1218.2547607421875,
+    "median_run_loaded_vector_mae_n": 62.184268951416016,
+    "worst_run_loaded_vector_mae_n": 86.2024154663086
+  },
+  "baseline_per_episode": [
+    {
+      "episode": "169_masked",
+      "precontact_max_est_n": 121.4300765991211,
+      "loaded_vector_mae_n": 45.39446258544922,
+      "true_peak_magnitude_abs_error_n": 26.980457305908203
+    },
+    {
+      "episode": "169_oracle",
+      "precontact_max_est_n": 121.43009948730469,
+      "loaded_vector_mae_n": 66.74810791015625,
+      "true_peak_magnitude_abs_error_n": 10.866384506225586
+    },
+    {
+      "episode": "170_masked",
+      "precontact_max_est_n": 319.1999816894531,
+      "loaded_vector_mae_n": 49.3652458190918,
+      "true_peak_magnitude_abs_error_n": 28.65520477294922
+    },
+    {
+      "episode": "170_oracle",
+      "precontact_max_est_n": 319.20001220703125,
+      "loaded_vector_mae_n": 76.21038055419922,
+      "true_peak_magnitude_abs_error_n": 3.5819969177246094
+    },
+    {
+      "episode": "171_masked",
+      "precontact_max_est_n": 1200.108154296875,
+      "loaded_vector_mae_n": 48.06439971923828,
+      "true_peak_magnitude_abs_error_n": 18.556560516357422
+    },
+    {
+      "episode": "171_oracle",
+      "precontact_max_est_n": 1200.10791015625,
+      "loaded_vector_mae_n": 73.20813751220703,
+      "true_peak_magnitude_abs_error_n": 27.184776306152344
+    },
+    {
+      "episode": "172_masked",
+      "precontact_max_est_n": 178.15382385253906,
+      "loaded_vector_mae_n": 40.27992630004883,
+      "true_peak_magnitude_abs_error_n": 5.758949279785156
+    },
+    {
+      "episode": "172_oracle",
+      "precontact_max_est_n": 178.15386962890625,
+      "loaded_vector_mae_n": 77.33526611328125,
+      "true_peak_magnitude_abs_error_n": 14.173049926757812
+    },
+    {
+      "episode": "173_masked",
+      "precontact_max_est_n": 1218.2547607421875,
+      "loaded_vector_mae_n": 57.62042999267578,
+      "true_peak_magnitude_abs_error_n": 43.18722915649414
+    },
+    {
+      "episode": "173_oracle",
+      "precontact_max_est_n": 1218.2547607421875,
+      "loaded_vector_mae_n": 68.56128692626953,
+      "true_peak_magnitude_abs_error_n": 0.5673789978027344
+    },
+    {
+      "episode": "174_masked",
+      "precontact_max_est_n": 185.16253662109375,
+      "loaded_vector_mae_n": 26.22754669189453,
+      "true_peak_magnitude_abs_error_n": 12.510530471801758
+    },
+    {
+      "episode": "174_oracle",
+      "precontact_max_est_n": 185.1627197265625,
+      "loaded_vector_mae_n": 77.07105255126953,
+      "true_peak_magnitude_abs_error_n": 11.87103271484375
+    },
+    {
+      "episode": "175_masked",
+      "precontact_max_est_n": 1197.248291015625,
+      "loaded_vector_mae_n": 42.224552154541016,
+      "true_peak_magnitude_abs_error_n": 13.724590301513672
+    },
+    {
+      "episode": "175_oracle",
+      "precontact_max_est_n": 1197.248291015625,
+      "loaded_vector_mae_n": 86.2024154663086,
+      "true_peak_magnitude_abs_error_n": 1.4855499267578125
+    },
+    {
+      "episode": "176_masked",
+      "precontact_max_est_n": 1205.078369140625,
+      "loaded_vector_mae_n": 45.939598083496094,
+      "true_peak_magnitude_abs_error_n": 8.938915252685547
+    },
+    {
+      "episode": "176_oracle",
+      "precontact_max_est_n": 1205.078369140625,
+      "loaded_vector_mae_n": 75.30779266357422,
+      "true_peak_magnitude_abs_error_n": 17.133811950683594
+    },
+    {
+      "episode": "177_masked",
+      "precontact_max_est_n": 162.93206787109375,
+      "loaded_vector_mae_n": 39.91520690917969,
+      "true_peak_magnitude_abs_error_n": 27.54840850830078
+    },
+    {
+      "episode": "177_oracle",
+      "precontact_max_est_n": 162.9325408935547,
+      "loaded_vector_mae_n": 78.45869445800781,
+      "true_peak_magnitude_abs_error_n": 6.382984161376953
+    },
+    {
+      "episode": "178_masked",
+      "precontact_max_est_n": 125.89797973632812,
+      "loaded_vector_mae_n": 41.46849822998047,
+      "true_peak_magnitude_abs_error_n": 46.220767974853516
+    },
+    {
+      "episode": "178_oracle",
+      "precontact_max_est_n": 125.89797973632812,
+      "loaded_vector_mae_n": 72.9167251586914,
+      "true_peak_magnitude_abs_error_n": 4.172176361083984
+    },
+    {
+      "episode": "179_masked",
+      "precontact_max_est_n": 1214.1968994140625,
+      "loaded_vector_mae_n": 54.26028060913086,
+      "true_peak_magnitude_abs_error_n": 10.867473602294922
+    },
+    {
+      "episode": "179_oracle",
+      "precontact_max_est_n": 1214.1968994140625,
+      "loaded_vector_mae_n": 80.73975372314453,
+      "true_peak_magnitude_abs_error_n": 13.877986907958984
+    },
+    {
+      "episode": "180_masked",
+      "precontact_max_est_n": 1105.03076171875,
+      "loaded_vector_mae_n": 43.003021240234375,
+      "true_peak_magnitude_abs_error_n": 10.270393371582031
+    },
+    {
+      "episode": "180_oracle",
+      "precontact_max_est_n": 1105.03076171875,
+      "loaded_vector_mae_n": 83.3812026977539,
+      "true_peak_magnitude_abs_error_n": 14.232757568359375
+    }
+  ],
+  "checks": {
+    "episode_count": true,
+    "precontact_actor": true,
+    "precontact_force": true,
+    "median_vector": true,
+    "worst_run_vector": true,
+    "first_loaded_misses": true,
+    "median_peak_error": true,
+    "median_direction": true,
+    "vector_improvement": true,
+    "precontact_improvement": true
+  },
+  "pass_force_gate": true,
+  "pretest_plan_sha256": "ea06f71523bbbe34962d2ef49582986ddde77b218adf41b985c1b9fcdaf6602f"
+}

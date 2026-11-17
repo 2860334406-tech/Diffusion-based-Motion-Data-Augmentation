@@ -53,6 +53,14 @@ yet connected** to `Smp-Force-Unloading-G1` or its rewards. See
 [the force-estimator interface and evaluation](force/v392/README.md) for
 the exact input contract, model selection, replay check, and limitations.
 
+For the moving EXP-022 chest-push policy, a separate
+[chest-domain bundle](force/exp022_chest_v1/README.md) adapts the observable
+history to the policy's contact input. Its frozen simulation test covers
+12 new seeds in both oracle and masked-input modes, with a median loaded-force
+vector error of 8.60 N and no precontact actor-switch false activations.
+This is an offline input comparison; an estimator-driven closed-loop policy
+rollout remains the next integration step.
+
 ## Setup
 
 [`uv`](https://docs.astral.sh/uv/) is the canonical package manager; dependencies

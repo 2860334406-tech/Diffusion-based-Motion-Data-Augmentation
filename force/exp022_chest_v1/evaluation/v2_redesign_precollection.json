@@ -1,0 +1,13 @@
+{
+  "reason": "Fresh policy-input test found precontact actor activation in 3 of 12 seed pairs, including one 56 N force prediction immediately after the 10-frame warmup",
+  "prior_failure_result": "policy_mapping_fresh_test.json; 6 of 24 episodes precontact actor active versus prespecified maximum 3",
+  "force_model_v1_sha256": "9a41f7bc355385145953cab56b1cadf616392551fc828e31c7c127a1cbd99ae0",
+  "mapping_calibration_sha256": "5c7c65f076178cdbd14300c284197cb62c23aa583112ddbe79de8dcba0eec31a",
+  "development_train_seeds": [[61, 108], [145, 156]],
+  "fresh_validation_seeds": [157, 168],
+  "locked_test_seeds": [169, 180],
+  "training_label": "20 ms three-dimensional resultant in torso_link; contact labels and oracle contact term only for supervised training/audit",
+  "selection_priority": "Precontact false actor switch at the actual 2.45 N EMA threshold, first loaded detection, peak/worst force and per-run vector error",
+  "test_policy": "Do not inspect seeds 169-180 until candidate and acceptance limits are frozen",
+  "old_mapping_test_role": "Development only from this point; never counted as independent evidence for v2"
+}
