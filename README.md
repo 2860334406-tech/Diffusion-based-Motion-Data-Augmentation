@@ -57,9 +57,14 @@ For the moving EXP-022 chest-push policy, a separate
 [chest-domain bundle](force/exp022_chest_v1/README.md) adapts the observable
 history to the policy's contact input. Its frozen simulation test covers
 12 new seeds in both oracle and masked-input modes, with a median loaded-force
-vector error of 8.60 N and no precontact actor-switch false activations.
-This is an offline input comparison; an estimator-driven closed-loop policy
-rollout remains the next integration step.
+vector error of 8.60 N. Subsequent closed-loop tests found peak-force misses
+when the sphere moved from the chest to the right shoulder or elbow. An
+[experimental shoulder-migration candidate](force/exp022_shoulder_rescue_v1/README.md)
+improves those force estimates on frozen simulation runs. The sustained-push
+oracle policy also fails, and the candidate's dynamic point/normal mapping
+causes joint-limit failures at the stronger tested target. The default remains
+the chest-domain V1 bundle; the linked report contains the paired runs and
+component ablations.
 
 ## Setup
 

@@ -1,0 +1,33 @@
+seed,target_force_n,arm,physical_contact,frames,failures,peak_true_force_n,longest_torso_loaded_ge10n_s,peak_geometry,peak_own_gpu_mib,precontact_fp10_frames,first_loaded_miss,peak_miss,peak_pred_force_n,peak_vector_error_n,loaded_vector_mae_n,zero_force_fp10_frames,rescue_frames
+269,15,masked,True,600,[],46.94542174611038,3.86,robot/torso_collision,354,,,,,,,,
+269,15,oracle,True,236,['self_collision'],94.94444006906737,0.04,robot/right_shoulder_yaw_collision,354,0,True,False,66.50092414363338,36.75328099169753,12.643835991971303,1,
+269,15,v1_estimated,True,272,['workspace'],62.41499341435828,0.06,robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision,354,0,True,True,0.0,62.41499341435828,18.06869796905096,6,
+269,15,candidate_estimated,True,256,['self_collision'],67.36323092029899,0.08,robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision,354,0,True,False,62.972169471024465,13.392282508637962,14.068818445257724,4,1
+270,15,masked,True,600,[],19.1957240825165,6.8,robot/torso_collision,354,,,,,,,,
+270,15,oracle,True,310,['self_collision'],63.74021040093606,0.06,robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision,354,0,True,False,25.319508690064822,41.63761681479068,11.269634737119171,1,
+270,15,v1_estimated,True,326,['self_collision'],114.22386849271516,0.22,robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision,354,0,True,True,0.0,114.22386849271516,20.498222226441307,0,
+270,15,candidate_estimated,True,294,['self_collision'],43.19450395044342,0.1,robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision,354,0,True,False,62.473867259677604,42.81579265581934,15.441569026669516,0,3
+271,15,masked,True,600,[],18.660447140998038,7.3,robot/torso_collision,354,,,,,,,,
+271,15,oracle,True,298,['workspace'],37.19696892477661,0.06,robot/torso_collision,354,0,True,False,31.457476828838423,6.031155043501682,11.840985713984022,3,
+271,15,v1_estimated,True,318,['workspace'],67.08494986656314,0.12,robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision,354,0,True,True,0.0,67.08494986656314,18.83484982564315,0,
+271,15,candidate_estimated,True,290,['self_collision'],65.45675126531071,0.14,robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision,354,0,True,False,52.31000813091019,17.343615667157845,11.9506722360392,0,1
+272,15,masked,True,565,['self_collision'],55.64279565587493,3.02,robot/torso_collision,354,,,,,,,,
+272,15,oracle,True,251,['self_collision'],74.17704122180209,0.12,robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision,354,0,False,False,75.08592453913606,11.91475039158344,11.749421484209485,9,
+272,15,v1_estimated,True,309,['workspace'],50.477336769485746,0.18,robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision,354,0,False,True,0.0,50.477336769485746,18.97701508858464,5,
+272,15,candidate_estimated,True,194,['self_collision'],40.47943296820776,0.02,robot/torso_collision,354,0,False,False,33.59921286784692,13.19439185881255,7.181311567557561,5,2
+273,25,masked,True,356,['workspace'],38.26166819381203,1.22,robot/torso_collision,354,,,,,,,,
+273,25,oracle,True,234,['self_collision'],71.9344394215701,0.08,robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision,354,0,False,False,57.803069487038464,21.529136208593837,12.672668395822754,3,
+273,25,v1_estimated,True,254,['workspace'],88.60590189481661,0.12,robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision,354,0,False,True,0.0,88.60590189481661,23.731570819428303,7,
+273,25,candidate_estimated,True,232,"['joint_hard_limit', 'self_collision']",93.89103336627863,0.12,robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision,354,0,False,False,81.14526339757032,19.906278728097185,13.311829539887867,2,2
+274,25,masked,True,325,['workspace'],43.08400759549155,0.34,robot/torso_collision,354,,,,,,,,
+274,25,oracle,True,245,['self_collision'],57.61095494639582,0.1,robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision,354,0,False,False,68.78100107854671,36.38980760166223,14.46871754410122,3,
+274,25,v1_estimated,True,258,['workspace'],94.32410949380689,0.14,robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision,354,0,False,True,0.0,94.32410949380689,23.45705887126199,1,
+274,25,candidate_estimated,True,233,"['joint_hard_limit', 'self_collision']",82.18273744325668,0.12,robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision,354,0,False,False,73.94721116494469,21.911263804456514,13.23148519059507,0,1
+275,25,masked,True,253,['workspace'],43.62180051288309,0.14,robot/torso_collision,354,,,,,,,,
+275,25,oracle,True,181,['joint_hard_limit'],55.90254508891668,0.08,robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision,354,0,False,False,53.37908483616518,10.902955124239286,8.687467178079414,0,
+275,25,v1_estimated,True,194,['self_collision'],79.7246471724767,0.08,robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision,354,0,False,True,0.0,79.7246471724767,22.034148311146907,0,
+275,25,candidate_estimated,True,180,"['joint_hard_limit', 'self_collision']",66.44980451069344,0.12,robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision,354,0,False,False,48.18318135193469,21.69512747082892,16.28664384379649,0,2
+276,25,masked,True,295,['workspace'],39.17170652054005,0.9400000000000001,robot/torso_collision,354,,,,,,,,
+276,25,oracle,True,178,['self_collision'],39.17174929754626,0.08,robot/torso_collision,354,0,False,False,23.04620807078657,17.981773089612247,12.486094467430249,2,
+276,25,v1_estimated,True,202,['workspace'],94.38919826763777,0.16,robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision,354,0,False,True,0.0,94.38919826763777,22.460332342456123,1,
+276,25,candidate_estimated,True,182,"['joint_hard_limit', 'self_collision']",89.24466082491574,0.14,robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision,354,0,False,False,75.66846735142293,20.46569719944483,11.588169232569658,1,1

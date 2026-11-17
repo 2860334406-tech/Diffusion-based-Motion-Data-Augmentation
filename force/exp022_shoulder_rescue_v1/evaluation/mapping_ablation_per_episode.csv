@@ -1,0 +1,22 @@
+seed,target_force_n,physical_contact,failures,peak_true_force_n,longest_torso_loaded_ge10n_s,precontact_fp10_frames,first_loaded_miss,peak_miss,loaded_vector_mae_n,zero_force_fp10_frames,arm
+269,15,True,['workspace'],62.41499341435828,0.06,0,True,True,18.06869796905096,6,v1
+269,15,True,['self_collision'],67.36323092029899,0.08,0,True,False,14.068818445257724,4,full_candidate
+269,15,True,['self_collision'],60.21732958715568,0.06,0,True,False,13.88755621520951,4,force_only
+270,15,True,['self_collision'],114.22386849271516,0.22,0,True,True,20.498222226441307,0,v1
+270,15,True,['self_collision'],43.19450395044342,0.1,0,True,False,15.441569026669516,0,full_candidate
+270,15,True,['self_collision'],30.78579953117407,0.08,0,True,False,10.789500640409962,1,force_only
+271,15,True,['workspace'],67.08494986656314,0.12,0,True,True,18.83484982564315,0,v1
+271,15,True,['self_collision'],65.45675126531071,0.14,0,True,False,11.9506722360392,0,full_candidate
+271,15,True,['self_collision'],37.45959451418611,0.18,0,True,False,10.753640145886498,0,force_only
+273,25,True,['workspace'],88.60590189481661,0.12,0,False,True,23.731570819428303,7,v1
+273,25,True,"['joint_hard_limit', 'self_collision']",93.89103336627863,0.12,0,False,False,13.311829539887867,2,full_candidate
+273,25,True,['self_collision'],42.46513525455794,0.14,0,False,False,11.38745410533514,2,force_only
+274,25,True,['workspace'],94.32410949380689,0.14,0,False,True,23.45705887126199,1,v1
+274,25,True,"['joint_hard_limit', 'self_collision']",82.18273744325668,0.12,0,False,False,13.23148519059507,0,full_candidate
+274,25,True,['workspace'],37.35774527722184,0.14,0,False,False,11.296665773100603,0,force_only
+275,25,True,['self_collision'],79.7246471724767,0.08,0,False,True,22.034148311146907,0,v1
+275,25,True,"['joint_hard_limit', 'self_collision']",66.44980451069344,0.12,0,False,False,16.28664384379649,0,full_candidate
+275,25,True,['self_collision'],91.00171796279305,0.06,0,False,False,14.59232518565686,3,force_only
+276,25,True,['workspace'],94.38919826763777,0.16,0,False,True,22.460332342456123,1,v1
+276,25,True,"['joint_hard_limit', 'self_collision']",89.24466082491574,0.14,0,False,False,11.588169232569658,1,full_candidate
+276,25,True,['self_collision'],52.01314209683651,0.14,0,False,False,11.190056818810525,1,force_only

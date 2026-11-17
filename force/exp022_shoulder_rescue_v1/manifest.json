@@ -1,0 +1,27 @@
+{
+  "name": "EXP022 shoulder migration rescue pilot",
+  "status": "loadable experimental simulation candidate; V1 remains the default; sustained unloading and PPO replacement not accepted",
+  "model_sha256": "c74e7ca92771b17849e4cbf4ddbd2425dff4e10056c0adc4542e9b4de940327c",
+  "base_v1_model_sha256": "025ab758dee389eae33e7b9fe97419aba7b9d271934e04d513273b9abbf286df",
+  "base_v1_mapping_sha256": "22f7e8c366b214fb3bafacb07464dcb57f95820c9c7e6d5b49cd8b204ef5160a",
+  "runtime_code_sha256": "62962c42813c3d6148cef1a17e9a3fb8ca3a3a002120ab9f3a924903e8bf1158",
+  "feature_code_sha256": "94c77b5394550603729538c2ab792de300e4406003e7f03dfd43b4c239863b10",
+  "policy_sha256": "82ddfe95ee383cd4cf62c65d6f080a46138ad43fbdd92f19e28d9272ea4e0d33",
+  "input": "50 Hz 930D causal proprioceptive history plus aligned 10x29 joint actuator-force history; no solver contact inputs",
+  "force_output": "3D resultant in torso_link coordinates, Newtons",
+  "policy_mapping": "single effective point and normal; shoulder point calibrated from training oracle frames; normal from observable ridge; experimental",
+  "gate": "shoulder region probability >=0.95, frozen V1 force magnitude <10 N, proposed force magnitude >=10 N",
+  "frozen_model_audit": "evaluation/candidate_frozen_pretest.json",
+  "locked_offline_evaluation": "evaluation/locked_offline_result.json",
+  "live_closed_loop_evaluation": "evaluation/live_result.json",
+  "original_pusher_safety_evaluation": "evaluation/original_safety_result.json",
+  "force_shift_evaluation": "evaluation/force_shift_result.json",
+  "component_ablation": [
+    "evaluation/mapping_ablation_result.json",
+    "evaluation/point_normal_ablation_result.json"
+  ],
+  "locked_estimated_summary": "8 episodes; peak misses 6 to 0; median loaded run 3D vector MAE 22.387 to 11.665 N; first-loaded misses 5 to 5; precontact FP episodes 0 to 0",
+  "live_20n_summary": "8 paired seeds; peak misses 8 to 0; median loaded run 3D vector MAE 22.560 to 15.987 N on distinct closed-loop trajectories; all oracle, V1, and candidate policies failed",
+  "critical_limit": "At 25 N target, full dynamic shoulder point plus normal had 4/4 joint-hard-limit episodes; force-only, point-only, and normal-only variants had 0/4, but every policy variant still failed. No claim of a safe shoulder policy input.",
+  "scope": "EXP-022 chest-target 5 kg sphere pusher in simulation with contact migration to right shoulder/elbow; not a general four-site, multi-contact, real-G1, or stable unloading result"
+}

@@ -1,0 +1,32 @@
+{
+  "status": "fixed before new validation metrics were inspected; validation collection had started",
+  "purpose": "bounded observable-only correction for right shoulder and elbow contact migration under EXP-022 sphere contact",
+  "feature": "same causal 273D raw_plus_acc proprio and actuator-history features as V1",
+  "region_label_training_only": "actual right shoulder or right elbow geometry and 20-ms true force magnitude >=10 N",
+  "classifier": "StandardScaler plus logistic regression C=0.1, class_weight balanced, complete-run weights",
+  "gate_thresholds": [0.95, 0.99],
+  "gate": "only when region probability exceeds threshold and frozen V1 output magnitude is below 10 N; never uses geometry or solver force at inference",
+  "force_options": ["combined_ridge_new_weight_4", "combined_ridge_new_weight_8", "shoulder_ridge_alpha_300"],
+  "force_scaling": "frozen V1 StandardScaler and clip [-10,10] for all force options; shoulder ridge uses only shoulder-loaded training frames",
+  "force_rule": "substitute 3D force only when proposed magnitude >=10 N; otherwise preserve V1 exactly",
+  "policy_point_normal": "calibrate shoulder point from training oracle frames; compare constant and observable ridge normal heads; activate only under same region gate",
+  "normal_options": ["median", "ridge_alpha_30", "ridge_alpha_300"],
+  "development": "old v2 validation 24 episodes and new seeds 237-244 both actor-input modes",
+  "locked_test": "new seeds 245-252 untouched until one candidate frozen",
+  "old_safety": {
+    "precontact_fp10_episodes_increase": 0,
+    "precontact_actor_active_episodes_increase": 0,
+    "zero_force_fp10_frames_increase_max": 5,
+    "first_loaded_misses_increase": 0,
+    "median_run_vector_mae_relative_max": 1.02
+  },
+  "new_estimated_arm_improvement": {
+    "peak_miss_below10_max_fraction_of_baseline": 0.5,
+    "median_run_vector_mae_relative_max": 1.0,
+    "precontact_fp10_episodes_increase": 0,
+    "first_loaded_misses_increase": 0,
+    "median_peak_policy_point_gap_m_max": 0.05,
+    "median_peak_policy_normal_angle_deg_max": 15.0
+  },
+  "release_requirement": "offline development pass, fresh locked test pass, and separate live closed-loop paired validation before replacing V1"
+}

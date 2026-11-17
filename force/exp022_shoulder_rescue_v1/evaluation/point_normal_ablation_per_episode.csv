@@ -1,0 +1,21 @@
+seed,target_force_n,physical_contact,failures,peak_true_force_n,longest_torso_loaded_ge10n_s,precontact_fp10_frames,first_loaded_miss,peak_miss,loaded_vector_mae_n,zero_force_fp10_frames,arm
+273,25,True,['workspace'],88.60590189481661,0.12,0,False,True,23.731570819428303,7,v1
+273,25,True,"['joint_hard_limit', 'self_collision']",93.89103336627863,0.12,0,False,False,13.311829539887867,2,full_candidate
+273,25,True,['self_collision'],42.46513525455794,0.14,0,False,False,11.38745410533514,2,force_only
+274,25,True,['workspace'],94.32410949380689,0.14,0,False,True,23.45705887126199,1,v1
+274,25,True,"['joint_hard_limit', 'self_collision']",82.18273744325668,0.12,0,False,False,13.23148519059507,0,full_candidate
+274,25,True,['workspace'],37.35774527722184,0.14,0,False,False,11.296665773100603,0,force_only
+275,25,True,['self_collision'],79.7246471724767,0.08,0,False,True,22.034148311146907,0,v1
+275,25,True,"['joint_hard_limit', 'self_collision']",66.44980451069344,0.12,0,False,False,16.28664384379649,0,full_candidate
+275,25,True,['self_collision'],91.00171796279305,0.06,0,False,False,14.59232518565686,3,force_only
+276,25,True,['workspace'],94.38919826763777,0.16,0,False,True,22.460332342456123,1,v1
+276,25,True,"['joint_hard_limit', 'self_collision']",89.24466082491574,0.14,0,False,False,11.588169232569658,1,full_candidate
+276,25,True,['self_collision'],52.01314209683651,0.14,0,False,False,11.190056818810525,1,force_only
+273,25,True,['self_collision'],66.04716030134506,0.12,0,False,False,11.964721981247793,2,point_only
+273,25,True,['self_collision'],84.43684454563645,0.06,0,False,False,13.623546163410968,3,normal_only
+274,25,True,['self_collision'],60.36238249804022,0.12,0,False,False,13.046658140524723,0,point_only
+274,25,True,['self_collision'],79.36539059884569,0.08,0,False,False,17.178345614219843,1,normal_only
+275,25,True,['self_collision'],78.04808111656338,0.1,0,False,False,18.495132612229906,0,point_only
+275,25,True,['self_collision'],72.02706767442315,0.12,0,False,False,17.22053111637473,0,normal_only
+276,25,True,['self_collision'],58.93313950512599,0.14,0,False,False,11.593907182671323,1,point_only
+276,25,True,['self_collision'],92.221529725423,0.14,0,False,False,13.479558493927374,3,normal_only

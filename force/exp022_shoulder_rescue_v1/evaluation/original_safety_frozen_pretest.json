@@ -1,0 +1,53 @@
+{
+  "status": "frozen before original-pusher safety batch",
+  "seeds": [
+    261,
+    262,
+    263,
+    264,
+    265,
+    266,
+    267,
+    268
+  ],
+  "arms": [
+    "oracle",
+    "v1_estimated",
+    "candidate_estimated"
+  ],
+  "common_cli": [
+    "--pusher-mode",
+    "original",
+    "--sphere-radius-m",
+    "0.1",
+    "--sphere-mass-kg",
+    "5",
+    "--target-force-n",
+    "30",
+    "--target-speed-m-s",
+    "0.2",
+    "--max-drive-force-weight-ratio",
+    "0.15",
+    "--max-travel-m",
+    "0.375",
+    "--no-video",
+    "--max-gpu-memory-gib",
+    "4",
+    "--min-free-gpu-gib",
+    "2"
+  ],
+  "candidate_model_sha256": "c74e7ca92771b17849e4cbf4ddbd2425dff4e10056c0adc4542e9b4de940327c",
+  "evaluator_sha256": "270508b05475abdb0e55b8b6ddfa8791bc7858bb9d0d06e42c46cd5520a6ad42",
+  "runtime_rescue_code_sha256": "62962c42813c3d6148cef1a17e9a3fb8ca3a3a002120ab9f3a924903e8bf1158",
+  "policy_sha256": "82ddfe95ee383cd4cf62c65d6f080a46138ad43fbdd92f19e28d9272ea4e0d33",
+  "v1_sha256": "025ab758dee389eae33e7b9fe97419aba7b9d271934e04d513273b9abbf286df",
+  "purpose": "check that a shoulder-targeted change does not break the original short-pulse chest protocol",
+  "acceptance": {
+    "precontact_actor_active_episodes_max_increase": 0,
+    "physical_contact_count_max_decrease": 0,
+    "event_success_count_max_decrease": 0,
+    "failure_count_max_increase": 0,
+    "first_loaded_misses_max_increase": 0
+  },
+  "limits": "original pusher retracts after event and cannot establish sustained unloading"
+}

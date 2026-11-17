@@ -1,0 +1,56 @@
+{
+  "status": "frozen before separate point/normal ablation",
+  "reason": "force-only removed 25 N joint hard limits in four runs, while all arms still failed",
+  "seeds": [
+    273,
+    274,
+    275,
+    276
+  ],
+  "modes": [
+    "point_only",
+    "normal_only"
+  ],
+  "common_cli": [
+    "--pusher-mode",
+    "sustained",
+    "--sphere-radius-m",
+    "0.1",
+    "--sphere-mass-kg",
+    "5",
+    "--target-force-n",
+    "25",
+    "--target-speed-m-s",
+    "0.06",
+    "--follow-speed-m-s",
+    "0.4",
+    "--base-force-gain-m-s-per-n",
+    "0",
+    "--motor-hold-after-contact",
+    "--freeze-push-heading",
+    "--one-way-speed-limit",
+    "--contact-time-constant-s",
+    "0.05",
+    "--max-drive-force-weight-ratio",
+    "0.1",
+    "--max-travel-m",
+    "0.75",
+    "--no-video",
+    "--max-gpu-memory-gib",
+    "4",
+    "--min-free-gpu-gib",
+    "2"
+  ],
+  "point_only": "candidate force and shoulder point; fixed chest normal",
+  "normal_only": "candidate force and shoulder normal; fixed chest point",
+  "candidate_model_sha256": "c74e7ca92771b17849e4cbf4ddbd2425dff4e10056c0adc4542e9b4de940327c",
+  "evaluator_sha256": "32de452e248d8541ec47d672f2cc81750423438776b95ef237b8b596d6b3d404",
+  "runtime_code_sha256": "62962c42813c3d6148cef1a17e9a3fb8ca3a3a002120ab9f3a924903e8bf1158",
+  "primary": [
+    "joint_hard_limit episodes",
+    "self_collision episodes",
+    "peak misses",
+    "loaded vector MAE"
+  ],
+  "limit": "four seeds at one target; diagnostic, with distinct closed-loop trajectories; no automatic model promotion"
+}

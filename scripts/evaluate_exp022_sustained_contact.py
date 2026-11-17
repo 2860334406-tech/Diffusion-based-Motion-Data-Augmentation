@@ -28,6 +28,7 @@ from smp.force_estimation.exp022_interface import (
   add_force_estimator_observations,
   validate_force_estimator_input,
 )
+from smp.force_estimation.exp022_shoulder_rescue import Exp022ShoulderRescueEstimator
 from smp.rl.tasks.force_unloading.force_unloading_env_cfg import (
   g1_force_unloading_smp_env_cfg,
 )
@@ -285,6 +286,11 @@ def main(
   mask_actor_rail_contact: bool = False,
   actor_contact_source: Literal["oracle", "estimated"] = "oracle",
   shadow_estimator: bool = False,
+  estimator_candidate_bundle: str = "",
+  estimator_candidate_sha256: str = "",
+  estimator_candidate_mapping: Literal[
+    "dynamic", "chest_fixed", "point_only", "normal_only"
+  ] = "dynamic",
   actor_contact_gain: float = 1.0,
   capture_shadow_inputs: bool = False,
   contact_time_constant_s: float = 0.01,
@@ -311,9 +317,21 @@ def main(
     raise ValueError("Estimated contact input requires unmasked unit actor gain")
   if shadow_estimator or actor_contact_source == "estimated":
     capture_shadow_inputs = True
+  estimator_needed = shadow_estimator or actor_contact_source == "estimated"
+  if estimator_candidate_bundle and (not estimator_needed or not estimator_candidate_sha256):
+    raise ValueError("Candidate bundle requires estimator inference and its SHA256")
+  if estimator_candidate_mapping != "dynamic" and not estimator_candidate_bundle:
+    raise ValueError("Candidate mapping ablation requires a candidate bundle")
   estimator = (
+    Exp022ShoulderRescueEstimator(
+      estimator_candidate_bundle, expected_sha256=estimator_candidate_sha256
+    )
+    if estimator_candidate_bundle
+    else load_exp022_chest_estimator() if estimator_needed else None
+  )
+  chest_mapping = (
     load_exp022_chest_estimator()
-    if shadow_estimator or actor_contact_source == "estimated"
+    if estimator_candidate_mapping != "dynamic"
     else None
   )
   free, total = torch.cuda.mem_get_info(0)
@@ -566,6 +584,14 @@ def main(
           observation["force_estimator_x"][0].detach().cpu().numpy(),
           observation["force_estimator_tau"][0].detach().cpu().numpy(),
         )
+        if chest_mapping is not None:
+          magnitude = float(np.linalg.norm(prediction["force_body_n"]))
+          if estimator_candidate_mapping in ("chest_fixed", "point_only"):
+            prediction["policy_normal_force_body_n"] = (
+              magnitude * chest_mapping.normal_body
+            ).astype(np.float32)
+          if estimator_candidate_mapping in ("chest_fixed", "normal_only"):
+            prediction["policy_point_body_m"] = chest_mapping.point_body.copy()
       contact_history = controller.contact_sensor.data.force_history
       measured_normal = contact_history[..., 0].abs().sum(dim=1).mean(dim=-1)
       rail_dof = int(controller.pusher.indexing.joint_v_adr[0])
@@ -614,6 +640,12 @@ def main(
             )
           ),
         )
+        if estimator_candidate_bundle:
+          state["rows"][-1].update(
+            shoulder_probability=float(prediction["shoulder_probability"]),
+            shoulder_force_rescued=int(prediction["shoulder_force_rescued"]),
+            shoulder_mapping_active=int(prediction["shoulder_mapping_active"]),
+          )
         if capture_shadow_inputs:
           state["shadow_steps"][-1].update(
             estimated_force_body_n=prediction["force_body_n"].copy(),
@@ -624,6 +656,12 @@ def main(
             .numpy()
             .copy(),
           )
+          if estimator_candidate_bundle:
+            state["shadow_steps"][-1].update(
+              shoulder_probability=np.float32(prediction["shoulder_probability"]),
+              shoulder_force_rescued=np.bool_(prediction["shoulder_force_rescued"]),
+              shoulder_mapping_active=np.bool_(prediction["shoulder_mapping_active"]),
+            )
       return result
 
   evaluation.load_env_cfg = load_cfg
@@ -694,6 +732,9 @@ def main(
     "mask_actor_rail_contact": mask_actor_rail_contact,
     "actor_contact_source": actor_contact_source,
     "shadow_estimator": estimator is not None,
+    "estimator_candidate_bundle": estimator_candidate_bundle or None,
+    "estimator_candidate_sha256": estimator_candidate_sha256 or None,
+    "estimator_candidate_mapping": estimator_candidate_mapping,
     "actor_contact_gain": effective_actor_contact_gain,
     "capture_shadow_inputs": capture_shadow_inputs,
     "contact_time_constant_s": contact_time_constant_s,

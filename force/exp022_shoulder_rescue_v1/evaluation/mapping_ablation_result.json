@@ -1,0 +1,440 @@
+{
+  "manifest_sha256": "c62fce83bbbbbd9e8d060c7c6aea1f2b2f3a1193b4d6eaa9da21c9029d031869",
+  "summary": {
+    "15": {
+      "v1": {
+        "episodes": 3,
+        "physical_contact": 3,
+        "failure_episodes": 3,
+        "failure_codes": {
+          "workspace": 2,
+          "self_collision": 1
+        },
+        "peak_misses": 3,
+        "first_loaded_misses": 3,
+        "precontact_fp10_episodes": 0,
+        "median_loaded_run_vector_mae_n": 18.83484982564315,
+        "median_peak_true_force_n": 67.08494986656314,
+        "median_longest_torso_loaded_ge10n_s": 0.12
+      },
+      "full_candidate": {
+        "episodes": 3,
+        "physical_contact": 3,
+        "failure_episodes": 3,
+        "failure_codes": {
+          "self_collision": 3
+        },
+        "peak_misses": 0,
+        "first_loaded_misses": 3,
+        "precontact_fp10_episodes": 0,
+        "median_loaded_run_vector_mae_n": 14.068818445257724,
+        "median_peak_true_force_n": 65.45675126531071,
+        "median_longest_torso_loaded_ge10n_s": 0.1
+      },
+      "force_only": {
+        "episodes": 3,
+        "physical_contact": 3,
+        "failure_episodes": 3,
+        "failure_codes": {
+          "self_collision": 3
+        },
+        "peak_misses": 0,
+        "first_loaded_misses": 3,
+        "precontact_fp10_episodes": 0,
+        "median_loaded_run_vector_mae_n": 10.789500640409962,
+        "median_peak_true_force_n": 37.45959451418611,
+        "median_longest_torso_loaded_ge10n_s": 0.08
+      }
+    },
+    "25": {
+      "v1": {
+        "episodes": 4,
+        "physical_contact": 4,
+        "failure_episodes": 4,
+        "failure_codes": {
+          "workspace": 3,
+          "self_collision": 1
+        },
+        "peak_misses": 4,
+        "first_loaded_misses": 0,
+        "precontact_fp10_episodes": 0,
+        "median_loaded_run_vector_mae_n": 22.958695606859056,
+        "median_peak_true_force_n": 91.46500569431174,
+        "median_longest_torso_loaded_ge10n_s": 0.13
+      },
+      "full_candidate": {
+        "episodes": 4,
+        "physical_contact": 4,
+        "failure_episodes": 4,
+        "failure_codes": {
+          "joint_hard_limit": 4,
+          "self_collision": 4
+        },
+        "peak_misses": 0,
+        "first_loaded_misses": 0,
+        "precontact_fp10_episodes": 0,
+        "median_loaded_run_vector_mae_n": 13.271657365241468,
+        "median_peak_true_force_n": 85.71369913408621,
+        "median_longest_torso_loaded_ge10n_s": 0.12
+      },
+      "force_only": {
+        "episodes": 4,
+        "physical_contact": 4,
+        "failure_episodes": 4,
+        "failure_codes": {
+          "self_collision": 3,
+          "workspace": 1
+        },
+        "peak_misses": 0,
+        "first_loaded_misses": 0,
+        "precontact_fp10_episodes": 0,
+        "median_loaded_run_vector_mae_n": 11.342059939217872,
+        "median_peak_true_force_n": 47.23913867569723,
+        "median_longest_torso_loaded_ge10n_s": 0.14
+      }
+    }
+  },
+  "episodes": [
+    {
+      "seed": 269,
+      "target_force_n": 15,
+      "physical_contact": true,
+      "failures": [
+        "workspace"
+      ],
+      "peak_true_force_n": 62.41499341435828,
+      "longest_torso_loaded_ge10n_s": 0.06,
+      "precontact_fp10_frames": 0,
+      "first_loaded_miss": true,
+      "peak_miss": true,
+      "loaded_vector_mae_n": 18.06869796905096,
+      "zero_force_fp10_frames": 6,
+      "arm": "v1"
+    },
+    {
+      "seed": 269,
+      "target_force_n": 15,
+      "physical_contact": true,
+      "failures": [
+        "self_collision"
+      ],
+      "peak_true_force_n": 67.36323092029899,
+      "longest_torso_loaded_ge10n_s": 0.08,
+      "precontact_fp10_frames": 0,
+      "first_loaded_miss": true,
+      "peak_miss": false,
+      "loaded_vector_mae_n": 14.068818445257724,
+      "zero_force_fp10_frames": 4,
+      "arm": "full_candidate"
+    },
+    {
+      "seed": 269,
+      "target_force_n": 15,
+      "arm": "force_only",
+      "physical_contact": true,
+      "failures": [
+        "self_collision"
+      ],
+      "peak_true_force_n": 60.21732958715568,
+      "longest_torso_loaded_ge10n_s": 0.06,
+      "precontact_fp10_frames": 0,
+      "first_loaded_miss": true,
+      "peak_miss": false,
+      "loaded_vector_mae_n": 13.88755621520951,
+      "zero_force_fp10_frames": 4
+    },
+    {
+      "seed": 270,
+      "target_force_n": 15,
+      "physical_contact": true,
+      "failures": [
+        "self_collision"
+      ],
+      "peak_true_force_n": 114.22386849271516,
+      "longest_torso_loaded_ge10n_s": 0.22,
+      "precontact_fp10_frames": 0,
+      "first_loaded_miss": true,
+      "peak_miss": true,
+      "loaded_vector_mae_n": 20.498222226441307,
+      "zero_force_fp10_frames": 0,
+      "arm": "v1"
+    },
+    {
+      "seed": 270,
+      "target_force_n": 15,
+      "physical_contact": true,
+      "failures": [
+        "self_collision"
+      ],
+      "peak_true_force_n": 43.19450395044342,
+      "longest_torso_loaded_ge10n_s": 0.1,
+      "precontact_fp10_frames": 0,
+      "first_loaded_miss": true,
+      "peak_miss": false,
+      "loaded_vector_mae_n": 15.441569026669516,
+      "zero_force_fp10_frames": 0,
+      "arm": "full_candidate"
+    },
+    {
+      "seed": 270,
+      "target_force_n": 15,
+      "arm": "force_only",
+      "physical_contact": true,
+      "failures": [
+        "self_collision"
+      ],
+      "peak_true_force_n": 30.78579953117407,
+      "longest_torso_loaded_ge10n_s": 0.08,
+      "precontact_fp10_frames": 0,
+      "first_loaded_miss": true,
+      "peak_miss": false,
+      "loaded_vector_mae_n": 10.789500640409962,
+      "zero_force_fp10_frames": 1
+    },
+    {
+      "seed": 271,
+      "target_force_n": 15,
+      "physical_contact": true,
+      "failures": [
+        "workspace"
+      ],
+      "peak_true_force_n": 67.08494986656314,
+      "longest_torso_loaded_ge10n_s": 0.12,
+      "precontact_fp10_frames": 0,
+      "first_loaded_miss": true,
+      "peak_miss": true,
+      "loaded_vector_mae_n": 18.83484982564315,
+      "zero_force_fp10_frames": 0,
+      "arm": "v1"
+    },
+    {
+      "seed": 271,
+      "target_force_n": 15,
+      "physical_contact": true,
+      "failures": [
+        "self_collision"
+      ],
+      "peak_true_force_n": 65.45675126531071,
+      "longest_torso_loaded_ge10n_s": 0.14,
+      "precontact_fp10_frames": 0,
+      "first_loaded_miss": true,
+      "peak_miss": false,
+      "loaded_vector_mae_n": 11.9506722360392,
+      "zero_force_fp10_frames": 0,
+      "arm": "full_candidate"
+    },
+    {
+      "seed": 271,
+      "target_force_n": 15,
+      "arm": "force_only",
+      "physical_contact": true,
+      "failures": [
+        "self_collision"
+      ],
+      "peak_true_force_n": 37.45959451418611,
+      "longest_torso_loaded_ge10n_s": 0.18,
+      "precontact_fp10_frames": 0,
+      "first_loaded_miss": true,
+      "peak_miss": false,
+      "loaded_vector_mae_n": 10.753640145886498,
+      "zero_force_fp10_frames": 0
+    },
+    {
+      "seed": 273,
+      "target_force_n": 25,
+      "physical_contact": true,
+      "failures": [
+        "workspace"
+      ],
+      "peak_true_force_n": 88.60590189481661,
+      "longest_torso_loaded_ge10n_s": 0.12,
+      "precontact_fp10_frames": 0,
+      "first_loaded_miss": false,
+      "peak_miss": true,
+      "loaded_vector_mae_n": 23.731570819428303,
+      "zero_force_fp10_frames": 7,
+      "arm": "v1"
+    },
+    {
+      "seed": 273,
+      "target_force_n": 25,
+      "physical_contact": true,
+      "failures": [
+        "joint_hard_limit",
+        "self_collision"
+      ],
+      "peak_true_force_n": 93.89103336627863,
+      "longest_torso_loaded_ge10n_s": 0.12,
+      "precontact_fp10_frames": 0,
+      "first_loaded_miss": false,
+      "peak_miss": false,
+      "loaded_vector_mae_n": 13.311829539887867,
+      "zero_force_fp10_frames": 2,
+      "arm": "full_candidate"
+    },
+    {
+      "seed": 273,
+      "target_force_n": 25,
+      "arm": "force_only",
+      "physical_contact": true,
+      "failures": [
+        "self_collision"
+      ],
+      "peak_true_force_n": 42.46513525455794,
+      "longest_torso_loaded_ge10n_s": 0.14,
+      "precontact_fp10_frames": 0,
+      "first_loaded_miss": false,
+      "peak_miss": false,
+      "loaded_vector_mae_n": 11.38745410533514,
+      "zero_force_fp10_frames": 2
+    },
+    {
+      "seed": 274,
+      "target_force_n": 25,
+      "physical_contact": true,
+      "failures": [
+        "workspace"
+      ],
+      "peak_true_force_n": 94.32410949380689,
+      "longest_torso_loaded_ge10n_s": 0.14,
+      "precontact_fp10_frames": 0,
+      "first_loaded_miss": false,
+      "peak_miss": true,
+      "loaded_vector_mae_n": 23.45705887126199,
+      "zero_force_fp10_frames": 1,
+      "arm": "v1"
+    },
+    {
+      "seed": 274,
+      "target_force_n": 25,
+      "physical_contact": true,
+      "failures": [
+        "joint_hard_limit",
+        "self_collision"
+      ],
+      "peak_true_force_n": 82.18273744325668,
+      "longest_torso_loaded_ge10n_s": 0.12,
+      "precontact_fp10_frames": 0,
+      "first_loaded_miss": false,
+      "peak_miss": false,
+      "loaded_vector_mae_n": 13.23148519059507,
+      "zero_force_fp10_frames": 0,
+      "arm": "full_candidate"
+    },
+    {
+      "seed": 274,
+      "target_force_n": 25,
+      "arm": "force_only",
+      "physical_contact": true,
+      "failures": [
+        "workspace"
+      ],
+      "peak_true_force_n": 37.35774527722184,
+      "longest_torso_loaded_ge10n_s": 0.14,
+      "precontact_fp10_frames": 0,
+      "first_loaded_miss": false,
+      "peak_miss": false,
+      "loaded_vector_mae_n": 11.296665773100603,
+      "zero_force_fp10_frames": 0
+    },
+    {
+      "seed": 275,
+      "target_force_n": 25,
+      "physical_contact": true,
+      "failures": [
+        "self_collision"
+      ],
+      "peak_true_force_n": 79.7246471724767,
+      "longest_torso_loaded_ge10n_s": 0.08,
+      "precontact_fp10_frames": 0,
+      "first_loaded_miss": false,
+      "peak_miss": true,
+      "loaded_vector_mae_n": 22.034148311146907,
+      "zero_force_fp10_frames": 0,
+      "arm": "v1"
+    },
+    {
+      "seed": 275,
+      "target_force_n": 25,
+      "physical_contact": true,
+      "failures": [
+        "joint_hard_limit",
+        "self_collision"
+      ],
+      "peak_true_force_n": 66.44980451069344,
+      "longest_torso_loaded_ge10n_s": 0.12,
+      "precontact_fp10_frames": 0,
+      "first_loaded_miss": false,
+      "peak_miss": false,
+      "loaded_vector_mae_n": 16.28664384379649,
+      "zero_force_fp10_frames": 0,
+      "arm": "full_candidate"
+    },
+    {
+      "seed": 275,
+      "target_force_n": 25,
+      "arm": "force_only",
+      "physical_contact": true,
+      "failures": [
+        "self_collision"
+      ],
+      "peak_true_force_n": 91.00171796279305,
+      "longest_torso_loaded_ge10n_s": 0.06,
+      "precontact_fp10_frames": 0,
+      "first_loaded_miss": false,
+      "peak_miss": false,
+      "loaded_vector_mae_n": 14.59232518565686,
+      "zero_force_fp10_frames": 3
+    },
+    {
+      "seed": 276,
+      "target_force_n": 25,
+      "physical_contact": true,
+      "failures": [
+        "workspace"
+      ],
+      "peak_true_force_n": 94.38919826763777,
+      "longest_torso_loaded_ge10n_s": 0.16,
+      "precontact_fp10_frames": 0,
+      "first_loaded_miss": false,
+      "peak_miss": true,
+      "loaded_vector_mae_n": 22.460332342456123,
+      "zero_force_fp10_frames": 1,
+      "arm": "v1"
+    },
+    {
+      "seed": 276,
+      "target_force_n": 25,
+      "physical_contact": true,
+      "failures": [
+        "joint_hard_limit",
+        "self_collision"
+      ],
+      "peak_true_force_n": 89.24466082491574,
+      "longest_torso_loaded_ge10n_s": 0.14,
+      "precontact_fp10_frames": 0,
+      "first_loaded_miss": false,
+      "peak_miss": false,
+      "loaded_vector_mae_n": 11.588169232569658,
+      "zero_force_fp10_frames": 1,
+      "arm": "full_candidate"
+    },
+    {
+      "seed": 276,
+      "target_force_n": 25,
+      "arm": "force_only",
+      "physical_contact": true,
+      "failures": [
+        "self_collision"
+      ],
+      "peak_true_force_n": 52.01314209683651,
+      "longest_torso_loaded_ge10n_s": 0.14,
+      "precontact_fp10_frames": 0,
+      "first_loaded_miss": false,
+      "peak_miss": false,
+      "loaded_vector_mae_n": 11.190056818810525,
+      "zero_force_fp10_frames": 1
+    }
+  ],
+  "interpretation_limit": "force-only changes the closed-loop trajectory; component causation is suggested, not proven by an offline same-state ablation"
+}

@@ -1,0 +1,26 @@
+{
+  "status": "fixed before validation collection",
+  "candidate_family": "V1 raw_plus_acc 273D logistic contact plus ridge 3D force, same alpha=300 C=0.3 warmup=10 threshold=0.6",
+  "train": "old 120 episodes plus new seeds 213-236 oracle and V1-estimated trajectories",
+  "development": "old 24 validation episodes and new seeds 237-244 oracle and V1-estimated trajectories",
+  "locked_test": "new seeds 245-252, untouched until one candidate is frozen",
+  "candidate_grid": {
+    "new_episode_weight": [1, 2, 4, 8],
+    "scaler": ["frozen_v1", "refit_on_combined_train"]
+  },
+  "old_safety": {
+    "precontact_actor_active_episodes_increase": 0,
+    "precontact_fp_episodes_increase": 0,
+    "zero_force_fp10_frames_increase_max": 5,
+    "first_loaded_misses_increase": 0,
+    "median_run_vector_mae_relative_max": 1.05
+  },
+  "new_estimated_arm_improvement": {
+    "precontact_fp_episodes_increase": 0,
+    "first_loaded_misses_increase": 0,
+    "peak_miss_below10_max_fraction_of_baseline": 0.5,
+    "median_run_vector_mae_relative_max": 1.0
+  },
+  "selection": "among passing candidates: fewest estimated-arm true-peak misses, then lowest estimated-arm median run vector MAE; if none pass, do not open locked test or promote",
+  "promotion": "requires same old safety and fresh locked estimated-arm criteria plus closed-loop comparison; no PPO in this stage"
+}

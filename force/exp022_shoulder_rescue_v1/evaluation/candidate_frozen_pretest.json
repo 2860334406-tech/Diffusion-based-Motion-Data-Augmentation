@@ -1,0 +1,45 @@
+{
+  "status": "frozen before independent locked test",
+  "test_seeds": [
+    245,
+    246,
+    247,
+    248,
+    249,
+    250,
+    251,
+    252
+  ],
+  "test_arms": [
+    "oracle",
+    "estimated"
+  ],
+  "selected": {
+    "option": "combined_ridge_new_weight_8",
+    "threshold": 0.95,
+    "normal_option": "ridge_alpha_30"
+  },
+  "hashes_sha256": {
+    "model": "c74e7ca92771b17849e4cbf4ddbd2425dff4e10056c0adc4542e9b4de940327c",
+    "selection": "d030d276bfc4a0b65ddac4976228c3c25b081c93863f893cf42dfc630922495d",
+    "contract": "d15b169aa686554400e0050466c7a62a5224507541355ea9703165a88c421b50",
+    "training_code": "8c93ae7b11a32376f852728d635cbb5d652700388c3ca6558be04af79e2e2177",
+    "feature_code": "94c77b5394550603729538c2ab792de300e4406003e7f03dfd43b4c239863b10",
+    "baseline_model": "025ab758dee389eae33e7b9fe97419aba7b9d271934e04d513273b9abbf286df",
+    "policy": "82ddfe95ee383cd4cf62c65d6f080a46138ad43fbdd92f19e28d9272ea4e0d33",
+    "collection_design": "580d4e358ce2b2b47ddcd04e575c82bcd2056442cbf03db81b1c45fa2cad77a2"
+  },
+  "test_gate": {
+    "estimated_peak_misses_max_fraction_of_v1": 0.5,
+    "estimated_median_loaded_vector_mae_max_fraction_of_v1": 1.0,
+    "estimated_worst_run_vector_mae_max_fraction_of_v1": 1.1,
+    "precontact_fp_episodes_increase": 0,
+    "first_loaded_misses_increase": 0,
+    "median_peak_policy_point_gap_m_max": 0.05,
+    "median_peak_policy_normal_angle_deg_max": 15.0,
+    "old_validation_safety_still_passes": true
+  },
+  "report_all_episodes": true,
+  "no_candidate_tuning_after_test": true,
+  "no_runtime_or_PPO_release_from_offline_test_alone": true
+}

@@ -1,0 +1,8 @@
+{
+  "model_sha256": "c74e7ca92771b17849e4cbf4ddbd2425dff4e10056c0adc4542e9b4de940327c",
+  "frames": 256,
+  "max_force_component_diff_n": 0.0,
+  "gate_exact": true,
+  "mapping_exact": true,
+  "max_probability_diff": 0.0
+}

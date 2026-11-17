@@ -1,0 +1,11 @@
+{
+  "episodes": 8,
+  "active_frames": 191,
+  "common_detected": 84,
+  "newly_detected": 70,
+  "still_missed": 37,
+  "common_v1_mean_angle_deg": 29.853082588740758,
+  "common_candidate_mean_angle_deg": 29.853082588740758,
+  "new_candidate_mean_angle_deg": 13.639569331918445,
+  "common_force_exact": true
+}
