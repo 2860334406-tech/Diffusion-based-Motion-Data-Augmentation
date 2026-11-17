@@ -15,7 +15,7 @@
 
 有接触的 7 对回合，首次接触发生在同一控制步；接触前最大单关节动作差不超过 0.00066。181 号是例外：物理接触前第 12 步估计出 61.08 N，真值为 0 N，接触概率 0.888。估计输入组的 Actor 接触开关在真实接触前累计打开 51 帧，动作随之改变；该组最终没有碰到球头，`event_success=0`。真值组在第 135 步发生接触并完成事件。估计组另有 183、188 号在事件成功后触发 `workspace` 终止。这里没有把 `workspace` 终止称为摔倒。
 
-[8 组真实力与估计力曲线](original/paired_force_traces.png)；[181 号误报、Actor 开关和动作差曲线](original/seed181_precontact_feedback.png)；[181 号并排视频](original/seed181_oracle_left_estimated_right.mp4)，左侧真值输入、右侧估计输入。逐回合指标见 [`per_episode.csv`](original/per_episode.csv)，配对差值见 [`per_pair.csv`](original/per_pair.csv)，条件与汇总见 [`design.json`](original/design.json)、[`summary.json`](original/summary.json)。16 回合共 8,922 个推理帧，用保存的本体输入重放估计器后，三维力各分量最大差为 0 N；估计组 Actor 的 32 维接触历史重放最大差为 2.71×10⁻⁷，真值组 Actor 接触历史与原观测逐项相同，见 [`streaming_replay_audit.json`](original/streaming_replay_audit.json)。录屏与无录屏的 181 号回合接触/终止结论相同。
+[8 组真实力与估计力曲线](original/paired_force_traces.png)以各自真值组首次接触为中心放大时间轴；[181 号误报、Actor 开关和动作差曲线](original/seed181_precontact_feedback.png)展示更早的接触前阶段；[181 号并排视频](original/seed181_oracle_left_estimated_right.mp4)左侧真值输入、右侧估计输入。逐回合指标见 [`per_episode.csv`](original/per_episode.csv)，配对差值见 [`per_pair.csv`](original/per_pair.csv)，条件与汇总见 [`design.json`](original/design.json)、[`summary.json`](original/summary.json)。16 回合共 8,922 个推理帧，用保存的本体输入重放估计器后，三维力各分量最大差为 0 N；估计组 Actor 的 32 维接触历史重放最大差为 2.71×10⁻⁷，真值组 Actor 接触历史与原观测逐项相同，见 [`streaming_replay_audit.json`](original/streaming_replay_audit.json)。录屏与无录屏的 181 号回合接触/终止结论相同。
 
 `event_success` 是原任务的事件判定，不能替代持续受力卸力测试。185 号虽然有 8.24 s 几何接触，≥10 N 受力只持续了 0.08 s；其他回合也只有短促有效加载。因此这 8 对回合验证了闭环接口并暴露误报风险，不能证明估计输入下的持续卸力能力。
 

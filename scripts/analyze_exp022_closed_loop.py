@@ -230,9 +230,12 @@ def main(root: Path = Path("logs/reproduction/exp022_closed_loop_v1")) -> None:
         f"{pair['oracle']['audit']['sphere_mass_kg']:.0f} kg ball"
       )
     ax.set_ylabel("Resultant force (N)")
-    ax.set_xlim(
-      0, max(len(pair[mode]["force"]) for mode in ("oracle", "estimated")) * 0.02
-    )
+    end_time = max(len(pair[mode]["force"]) for mode in ("oracle", "estimated")) * 0.02
+    if original_pusher and pair["oracle"]["first_contact"] is not None:
+      contact_time = (pair["oracle"]["first_contact"] + 1) * 0.02
+      ax.set_xlim(max(0, contact_time - 0.3), min(end_time, contact_time + 1.5))
+    else:
+      ax.set_xlim(0, end_time)
     ax.grid(alpha=0.18)
   for ax in axes[-1]:
     ax.set_xlabel("Time (s)")
