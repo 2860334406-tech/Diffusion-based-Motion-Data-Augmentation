@@ -292,6 +292,10 @@ def main(
     "dynamic", "chest_fixed", "point_only", "normal_only"
   ] = "dynamic",
   actor_contact_gain: float = 1.0,
+  oracle_force_scalar_gain: float = 1.0,
+  oracle_contact_components: Literal[
+    "full", "active_only", "active_force_only", "geometry_only", "scalar_only"
+  ] = "full",
   capture_shadow_inputs: bool = False,
   contact_time_constant_s: float = 0.01,
   kinematic_probe: bool = False,
@@ -305,6 +309,7 @@ def main(
     or sphere_mass_kg <= 0
     or rail_joint_damping_n_s_per_m < 0
     or not 0.0 <= actor_contact_gain <= 1.0
+    or not 0.0 <= oracle_force_scalar_gain <= 1.0
     or max_travel_m < 0.375
     or target_speed_m_s <= 0
   ):
@@ -312,9 +317,12 @@ def main(
   if pusher_mode == "original" and kinematic_probe:
     raise ValueError("Original pusher cannot be combined with the kinematic probe")
   if actor_contact_source == "estimated" and (
-    mask_actor_rail_contact or actor_contact_gain != 1.0
+    mask_actor_rail_contact
+    or actor_contact_gain != 1.0
+    or oracle_force_scalar_gain != 1.0
+    or oracle_contact_components != "full"
   ):
-    raise ValueError("Estimated contact input requires unmasked unit actor gain")
+    raise ValueError("Estimated contact input requires unmasked unit actor gains")
   if shadow_estimator or actor_contact_source == "estimated":
     capture_shadow_inputs = True
   estimator_needed = shadow_estimator or actor_contact_source == "estimated"
@@ -463,6 +471,18 @@ def main(
         raise RuntimeError(f"Expected 128D EXP-022 actor input, got {actor.shape}")
       if actor_contact_source == "oracle":
         actor[:, -32:] *= effective_actor_contact_gain
+        actor[:, -31::8] *= oracle_force_scalar_gain
+        contact_frames = actor[:, -32:].reshape(actor.shape[0], 4, 8).clone()
+        if oracle_contact_components == "active_only":
+          contact_frames[..., 1:] = 0
+        elif oracle_contact_components == "active_force_only":
+          contact_frames[..., 2:] = 0
+        elif oracle_contact_components == "geometry_only":
+          contact_frames[..., :2] = 0
+        elif oracle_contact_components == "scalar_only":
+          contact_frames[..., 0] = 0
+          contact_frames[..., 2:] = 0
+        actor[:, -32:] = contact_frames.reshape(actor.shape[0], 32)
       elif prediction is None:
         actor[:, -32:] = 0
       else:
@@ -736,6 +756,8 @@ def main(
     "estimator_candidate_sha256": estimator_candidate_sha256 or None,
     "estimator_candidate_mapping": estimator_candidate_mapping,
     "actor_contact_gain": effective_actor_contact_gain,
+    "oracle_force_scalar_gain": oracle_force_scalar_gain,
+    "oracle_contact_components": oracle_contact_components,
     "capture_shadow_inputs": capture_shadow_inputs,
     "contact_time_constant_s": contact_time_constant_s,
     "kinematic_probe": kinematic_probe,

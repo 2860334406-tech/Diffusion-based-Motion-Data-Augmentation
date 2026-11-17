@@ -1,0 +1,96 @@
+{
+  "policy_sha256": "82ddfe95ee383cd4cf62c65d6f080a46138ad43fbdd92f19e28d9272ea4e0d33",
+  "actor_contact_channel_order": [
+    "active",
+    "force_ratio",
+    "normal_x",
+    "normal_y",
+    "normal_z",
+    "point_x",
+    "point_y",
+    "point_z"
+  ],
+  "last_frame_point_y_train_mean_m": -0.00010109284630743787,
+  "last_frame_point_y_train_std_m": 0.0016378989676013589,
+  "last_frame_normal_y_train_mean": 0.0001928619312820956,
+  "last_frame_normal_y_train_std": 0.011313567869365215,
+  "normalizer_forward": "(x - mean) / (std + eps), no clipping",
+  "groups": {
+    "full_candidate": {
+      "active_shoulder_mapping_frames": 25,
+      "point_y_local_m": {
+        "median": -0.15359431505203247,
+        "max": -0.13569766283035278
+      },
+      "point_y_abs_normalized": {
+        "median": 93.7129135131836,
+        "max": 98.97478485107422
+      },
+      "normal_y_abs_normalized": {
+        "median": 40.75514602661133,
+        "max": 55.14396667480469
+      }
+    },
+    "force_only": {
+      "active_shoulder_mapping_frames": 34,
+      "point_y_local_m": {
+        "median": 0.00908917747437954,
+        "max": 0.02619875594973564
+      },
+      "point_y_abs_normalized": {
+        "median": 5.6109771728515625,
+        "max": 16.05696678161621
+      },
+      "normal_y_abs_normalized": {
+        "median": 15.559089660644531,
+        "max": 25.49739646911621
+      }
+    },
+    "point_only": {
+      "active_shoulder_mapping_frames": 20,
+      "point_y_local_m": {
+        "median": -0.15237680077552795,
+        "max": -0.13569775223731995
+      },
+      "point_y_abs_normalized": {
+        "median": 92.96958923339844,
+        "max": 98.22367858886719
+      },
+      "normal_y_abs_normalized": {
+        "median": 15.255533218383789,
+        "max": 25.49730110168457
+      }
+    },
+    "normal_only": {
+      "active_shoulder_mapping_frames": 23,
+      "point_y_local_m": {
+        "median": 0.004670742899179459,
+        "max": 0.02619864232838154
+      },
+      "point_y_abs_normalized": {
+        "median": 3.217897415161133,
+        "max": 16.056896209716797
+      },
+      "normal_y_abs_normalized": {
+        "median": 30.301918029785156,
+        "max": 45.74154281616211
+      }
+    },
+    "original_short_pulse_chest": {
+      "active_frames": 105,
+      "point_y_local_m": {
+        "median": 0.002657039789482951,
+        "max": 0.010270876809954643
+      },
+      "point_y_abs_normalized": {
+        "median": 1.6839351654052734,
+        "max": 6.332446098327637
+      },
+      "normal_y_abs_normalized": {
+        "median": 1.3876692056655884,
+        "max": 10.972880363464355
+      }
+    }
+  },
+  "limit": "normalizer distance measures input shift; different closed-loop trajectories and nonlinear Actor preclude a single-component causal claim"
+}

@@ -20,8 +20,20 @@
     "evaluation/mapping_ablation_result.json",
     "evaluation/point_normal_ablation_result.json"
   ],
+  "actor_input_audits": [
+    "evaluation/actor_normalizer_shift_audit.json",
+    "evaluation/oracle_scalar_gain_result.json",
+    "evaluation/oracle_components_result.json",
+    "evaluation/oracle_gain_fresh_result.json"
+  ],
   "locked_estimated_summary": "8 episodes; peak misses 6 to 0; median loaded run 3D vector MAE 22.387 to 11.665 N; first-loaded misses 5 to 5; precontact FP episodes 0 to 0",
   "live_20n_summary": "8 paired seeds; peak misses 8 to 0; median loaded run 3D vector MAE 22.560 to 15.987 N on distinct closed-loop trajectories; all oracle, V1, and candidate policies failed",
   "critical_limit": "At 25 N target, full dynamic shoulder point plus normal had 4/4 joint-hard-limit episodes; force-only, point-only, and normal-only variants had 0/4, but every policy variant still failed. No claim of a safe shoulder policy input.",
-  "scope": "EXP-022 chest-target 5 kg sphere pusher in simulation with contact migration to right shoulder/elbow; not a general four-site, multi-contact, real-G1, or stable unloading result"
+  "fresh_oracle_15n_summary": "8 new paired seeds; masked input was strict-valid 8/8 with 6.86 s median continuous torso load >=10 N; full oracle and zero-force-scalar oracle both failed 8/8; first physical contact step matched 8/8",
+  "scope": "EXP-022 chest-target 5 kg sphere pusher in simulation with contact migration to right shoulder/elbow; not a general four-site, multi-contact, real-G1, or stable unloading result",
+  "fresh_estimator_15n_evaluation": [
+    "evaluation/estimator_fresh15_result.json",
+    "evaluation/estimator_fresh15_offline_result.json"
+  ],
+  "fresh_estimator_15n_summary": "Follow-up on seeds 277-284: same V1 trajectories peak misses 8/8 to 0/8 and median loaded vector MAE 21.01 to 12.87 N; candidate closed loop 8/8 failures, first-loaded misses 5/8, peak misses 1/8, precontact FP episodes 1/8. Seeds selected after oracle/masked observations; not a new locked test."
 }

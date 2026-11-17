@@ -1,0 +1,446 @@
+{
+  "manifest_sha256": "18d5bcc6e0071b0d60cb9cfe236e3ada808de714afc71a4a0fcc8933a86dca7b",
+  "summary": {
+    "v1_estimated": {
+      "episodes": 8,
+      "physical_contact": 8,
+      "failure_episodes": 8,
+      "failure_codes": {
+        "workspace": 7,
+        "self_collision": 1
+      },
+      "peak_misses": 8,
+      "first_loaded_misses": 5,
+      "precontact_fp10_episodes": 1,
+      "zero_force_fp10_frames": 32,
+      "median_loaded_run_vector_mae_n": 21.012701608392142,
+      "worst_loaded_run_vector_mae_n": 31.715565384959284,
+      "median_peak_vector_error_n": 100.98869653850198,
+      "median_peak_true_force_n": 100.98869653850198,
+      "median_longest_torso_loaded_ge10n_s": 0.2,
+      "median_detected_direction_mean_deg": 27.09535970110693,
+      "max_own_gpu_mib": 354
+    },
+    "candidate_estimated": {
+      "episodes": 8,
+      "physical_contact": 8,
+      "failure_episodes": 8,
+      "failure_codes": {
+        "self_collision": 8,
+        "joint_hard_limit": 4
+      },
+      "peak_misses": 1,
+      "first_loaded_misses": 5,
+      "precontact_fp10_episodes": 1,
+      "zero_force_fp10_frames": 27,
+      "median_loaded_run_vector_mae_n": 14.434052467571568,
+      "worst_loaded_run_vector_mae_n": 23.03995915296277,
+      "median_peak_vector_error_n": 24.99023340699891,
+      "median_peak_true_force_n": 71.20528046828365,
+      "median_longest_torso_loaded_ge10n_s": 0.12,
+      "median_detected_direction_mean_deg": 21.07027727170356,
+      "max_own_gpu_mib": 354
+    }
+  },
+  "paired": [
+    {
+      "seed": 277,
+      "all_four_contact_same_step": true,
+      "candidate_minus_v1_true_peak_n": 0.0014867361134065504
+    },
+    {
+      "seed": 278,
+      "all_four_contact_same_step": true,
+      "candidate_minus_v1_true_peak_n": -34.21639296864217
+    },
+    {
+      "seed": 279,
+      "all_four_contact_same_step": true,
+      "candidate_minus_v1_true_peak_n": -29.991251461214205
+    },
+    {
+      "seed": 280,
+      "all_four_contact_same_step": true,
+      "candidate_minus_v1_true_peak_n": -61.57710986179574
+    },
+    {
+      "seed": 281,
+      "all_four_contact_same_step": true,
+      "candidate_minus_v1_true_peak_n": -11.186596923656865
+    },
+    {
+      "seed": 282,
+      "all_four_contact_same_step": false,
+      "candidate_minus_v1_true_peak_n": -44.09531687614535
+    },
+    {
+      "seed": 283,
+      "all_four_contact_same_step": true,
+      "candidate_minus_v1_true_peak_n": -8.240072916476791
+    },
+    {
+      "seed": 284,
+      "all_four_contact_same_step": true,
+      "candidate_minus_v1_true_peak_n": -24.827503846997246
+    }
+  ],
+  "episodes": [
+    {
+      "seed": 277,
+      "arm": "v1_estimated",
+      "frames": 239,
+      "first_contact_step": 156,
+      "failures": [
+        "workspace"
+      ],
+      "true_peak_n": 100.23046000679324,
+      "peak_geometry": "robot/right_shoulder_yaw_collision;robot/torso_collision",
+      "estimated_at_true_peak_n": 0.0,
+      "peak_miss": true,
+      "peak_vector_error_n": 100.23046000679324,
+      "first_loaded_miss": true,
+      "loaded_vector_mae_n": 22.982909248841107,
+      "detected_direction_mean_deg": 40.12910690973775,
+      "precontact_fp10_frames": 0,
+      "zero_force_fp10_frames": 8,
+      "longest_torso_loaded_ge10n_s": 0.22,
+      "peak_own_gpu_mib": 354
+    },
+    {
+      "seed": 277,
+      "arm": "candidate_estimated",
+      "frames": 220,
+      "first_contact_step": 156,
+      "failures": [
+        "self_collision"
+      ],
+      "true_peak_n": 100.23194674290664,
+      "peak_geometry": "robot/right_shoulder_yaw_collision;robot/torso_collision",
+      "estimated_at_true_peak_n": 73.40296466483743,
+      "peak_miss": false,
+      "peak_vector_error_n": 29.390594247119314,
+      "first_loaded_miss": true,
+      "loaded_vector_mae_n": 23.03995915296277,
+      "detected_direction_mean_deg": 23.125528264320423,
+      "precontact_fp10_frames": 0,
+      "zero_force_fp10_frames": 5,
+      "longest_torso_loaded_ge10n_s": 0.12,
+      "peak_own_gpu_mib": 354,
+      "rescue_frames": 3,
+      "peak_rescued": true
+    },
+    {
+      "seed": 278,
+      "arm": "v1_estimated",
+      "frames": 334,
+      "first_contact_step": 230,
+      "failures": [
+        "workspace"
+      ],
+      "true_peak_n": 116.80537401540653,
+      "peak_geometry": "robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision",
+      "estimated_at_true_peak_n": 0.0,
+      "peak_miss": true,
+      "peak_vector_error_n": 116.80537401540653,
+      "first_loaded_miss": true,
+      "loaded_vector_mae_n": 20.850175545665778,
+      "detected_direction_mean_deg": 24.214598794839823,
+      "precontact_fp10_frames": 0,
+      "zero_force_fp10_frames": 2,
+      "longest_torso_loaded_ge10n_s": 0.24,
+      "peak_own_gpu_mib": 354
+    },
+    {
+      "seed": 278,
+      "arm": "candidate_estimated",
+      "frames": 294,
+      "first_contact_step": 230,
+      "failures": [
+        "self_collision"
+      ],
+      "true_peak_n": 82.58898104676436,
+      "peak_geometry": "robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision",
+      "estimated_at_true_peak_n": 59.82067011717744,
+      "peak_miss": false,
+      "peak_vector_error_n": 24.991018123756795,
+      "first_loaded_miss": true,
+      "loaded_vector_mae_n": 16.177226242694093,
+      "detected_direction_mean_deg": 23.017335243652614,
+      "precontact_fp10_frames": 0,
+      "zero_force_fp10_frames": 2,
+      "longest_torso_loaded_ge10n_s": 0.08,
+      "peak_own_gpu_mib": 354,
+      "rescue_frames": 2,
+      "peak_rescued": false
+    },
+    {
+      "seed": 279,
+      "arm": "v1_estimated",
+      "frames": 346,
+      "first_contact_step": 215,
+      "failures": [
+        "workspace"
+      ],
+      "true_peak_n": 101.74693307021073,
+      "peak_geometry": "robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision",
+      "estimated_at_true_peak_n": 0.0,
+      "peak_miss": true,
+      "peak_vector_error_n": 101.74693307021073,
+      "first_loaded_miss": true,
+      "loaded_vector_mae_n": 21.175227671118503,
+      "detected_direction_mean_deg": 21.88464335629147,
+      "precontact_fp10_frames": 0,
+      "zero_force_fp10_frames": 3,
+      "longest_torso_loaded_ge10n_s": 0.24,
+      "peak_own_gpu_mib": 354
+    },
+    {
+      "seed": 279,
+      "arm": "candidate_estimated",
+      "frames": 306,
+      "first_contact_step": 215,
+      "failures": [
+        "joint_hard_limit",
+        "self_collision"
+      ],
+      "true_peak_n": 71.75568160899653,
+      "peak_geometry": "robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision",
+      "estimated_at_true_peak_n": 57.40435307837889,
+      "peak_miss": false,
+      "peak_vector_error_n": 18.06856998917641,
+      "first_loaded_miss": true,
+      "loaded_vector_mae_n": 14.929535417241915,
+      "detected_direction_mean_deg": 17.498417421216523,
+      "precontact_fp10_frames": 0,
+      "zero_force_fp10_frames": 3,
+      "longest_torso_loaded_ge10n_s": 0.14,
+      "peak_own_gpu_mib": 354,
+      "rescue_frames": 3,
+      "peak_rescued": false
+    },
+    {
+      "seed": 280,
+      "arm": "v1_estimated",
+      "frames": 289,
+      "first_contact_step": 173,
+      "failures": [
+        "workspace"
+      ],
+      "true_peak_n": 113.54037100008469,
+      "peak_geometry": "robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision",
+      "estimated_at_true_peak_n": 0.0,
+      "peak_miss": true,
+      "peak_vector_error_n": 113.54037100008469,
+      "first_loaded_miss": false,
+      "loaded_vector_mae_n": 21.361159629642128,
+      "detected_direction_mean_deg": 25.303646536850337,
+      "precontact_fp10_frames": 0,
+      "zero_force_fp10_frames": 2,
+      "longest_torso_loaded_ge10n_s": 0.2,
+      "peak_own_gpu_mib": 354
+    },
+    {
+      "seed": 280,
+      "arm": "candidate_estimated",
+      "frames": 266,
+      "first_contact_step": 173,
+      "failures": [
+        "self_collision"
+      ],
+      "true_peak_n": 51.96326113828895,
+      "peak_geometry": "robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision",
+      "estimated_at_true_peak_n": 33.36799046120236,
+      "peak_miss": false,
+      "peak_vector_error_n": 21.680498483657512,
+      "first_loaded_miss": false,
+      "loaded_vector_mae_n": 13.938569517901222,
+      "detected_direction_mean_deg": 16.69196542927587,
+      "precontact_fp10_frames": 0,
+      "zero_force_fp10_frames": 1,
+      "longest_torso_loaded_ge10n_s": 0.12,
+      "peak_own_gpu_mib": 354,
+      "rescue_frames": 1,
+      "peak_rescued": false
+    },
+    {
+      "seed": 281,
+      "arm": "v1_estimated",
+      "frames": 294,
+      "first_contact_step": 159,
+      "failures": [
+        "workspace"
+      ],
+      "true_peak_n": 79.50975090319967,
+      "peak_geometry": "robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision",
+      "estimated_at_true_peak_n": 0.0,
+      "peak_miss": true,
+      "peak_vector_error_n": 79.50975090319967,
+      "first_loaded_miss": true,
+      "loaded_vector_mae_n": 20.142733814283734,
+      "detected_direction_mean_deg": 35.080318065645045,
+      "precontact_fp10_frames": 0,
+      "zero_force_fp10_frames": 2,
+      "longest_torso_loaded_ge10n_s": 0.16,
+      "peak_own_gpu_mib": 354
+    },
+    {
+      "seed": 281,
+      "arm": "candidate_estimated",
+      "frames": 261,
+      "first_contact_step": 159,
+      "failures": [
+        "self_collision"
+      ],
+      "true_peak_n": 68.32315397954281,
+      "peak_geometry": "robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision",
+      "estimated_at_true_peak_n": 52.82414599139599,
+      "peak_miss": false,
+      "peak_vector_error_n": 22.559546437351656,
+      "first_loaded_miss": true,
+      "loaded_vector_mae_n": 13.396254151324715,
+      "detected_direction_mean_deg": 20.747640469484043,
+      "precontact_fp10_frames": 0,
+      "zero_force_fp10_frames": 1,
+      "longest_torso_loaded_ge10n_s": 0.1,
+      "peak_own_gpu_mib": 354,
+      "rescue_frames": 1,
+      "peak_rescued": false
+    },
+    {
+      "seed": 282,
+      "arm": "v1_estimated",
+      "frames": 265,
+      "first_contact_step": 234,
+      "failures": [
+        "self_collision"
+      ],
+      "true_peak_n": 134.36098185848695,
+      "peak_geometry": "robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision",
+      "estimated_at_true_peak_n": 0.0,
+      "peak_miss": true,
+      "peak_vector_error_n": 134.36098185848695,
+      "first_loaded_miss": false,
+      "loaded_vector_mae_n": 31.715565384959284,
+      "detected_direction_mean_deg": 28.887072865363518,
+      "precontact_fp10_frames": 7,
+      "zero_force_fp10_frames": 10,
+      "longest_torso_loaded_ge10n_s": 0.12,
+      "peak_own_gpu_mib": 354
+    },
+    {
+      "seed": 282,
+      "arm": "candidate_estimated",
+      "frames": 253,
+      "first_contact_step": 232,
+      "failures": [
+        "joint_hard_limit",
+        "self_collision"
+      ],
+      "true_peak_n": 90.2656649823416,
+      "peak_geometry": "robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision",
+      "estimated_at_true_peak_n": 74.61096560943336,
+      "peak_miss": false,
+      "peak_vector_error_n": 24.989448690241026,
+      "first_loaded_miss": false,
+      "loaded_vector_mae_n": 12.837647380011381,
+      "detected_direction_mean_deg": 22.413052264704188,
+      "precontact_fp10_frames": 7,
+      "zero_force_fp10_frames": 9,
+      "longest_torso_loaded_ge10n_s": 0.12,
+      "peak_own_gpu_mib": 354,
+      "rescue_frames": 2,
+      "peak_rescued": false
+    },
+    {
+      "seed": 283,
+      "arm": "v1_estimated",
+      "frames": 332,
+      "first_contact_step": 229,
+      "failures": [
+        "workspace"
+      ],
+      "true_peak_n": 78.89495224404756,
+      "peak_geometry": "robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision",
+      "estimated_at_true_peak_n": 0.0,
+      "peak_miss": true,
+      "peak_vector_error_n": 78.89495224404756,
+      "first_loaded_miss": false,
+      "loaded_vector_mae_n": 20.608484554079723,
+      "detected_direction_mean_deg": 22.09522100835192,
+      "precontact_fp10_frames": 0,
+      "zero_force_fp10_frames": 4,
+      "longest_torso_loaded_ge10n_s": 0.12,
+      "peak_own_gpu_mib": 354
+    },
+    {
+      "seed": 283,
+      "arm": "candidate_estimated",
+      "frames": 317,
+      "first_contact_step": 229,
+      "failures": [
+        "joint_hard_limit",
+        "self_collision"
+      ],
+      "true_peak_n": 70.65487932757077,
+      "peak_geometry": "robot/torso_collision",
+      "estimated_at_true_peak_n": 0.0,
+      "peak_miss": true,
+      "peak_vector_error_n": 70.65487932757077,
+      "first_loaded_miss": false,
+      "loaded_vector_mae_n": 15.947731735922428,
+      "detected_direction_mean_deg": 21.392914073923077,
+      "precontact_fp10_frames": 0,
+      "zero_force_fp10_frames": 5,
+      "longest_torso_loaded_ge10n_s": 0.18,
+      "peak_own_gpu_mib": 354,
+      "rescue_frames": 2,
+      "peak_rescued": false
+    },
+    {
+      "seed": 284,
+      "arm": "v1_estimated",
+      "frames": 263,
+      "first_contact_step": 176,
+      "failures": [
+        "workspace"
+      ],
+      "true_peak_n": 90.0520784653158,
+      "peak_geometry": "robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision",
+      "estimated_at_true_peak_n": 0.0,
+      "peak_miss": true,
+      "peak_vector_error_n": 90.0520784653158,
+      "first_loaded_miss": true,
+      "loaded_vector_mae_n": 18.232824620365786,
+      "detected_direction_mean_deg": 32.8512242856642,
+      "precontact_fp10_frames": 0,
+      "zero_force_fp10_frames": 1,
+      "longest_torso_loaded_ge10n_s": 0.2,
+      "peak_own_gpu_mib": 354
+    },
+    {
+      "seed": 284,
+      "arm": "candidate_estimated",
+      "frames": 235,
+      "first_contact_step": 176,
+      "failures": [
+        "joint_hard_limit",
+        "self_collision"
+      ],
+      "true_peak_n": 65.22457461831856,
+      "peak_geometry": "robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision",
+      "estimated_at_true_peak_n": 41.315508437818075,
+      "peak_miss": false,
+      "peak_vector_error_n": 25.55970913572583,
+      "first_loaded_miss": true,
+      "loaded_vector_mae_n": 10.127268817871368,
+      "detected_direction_mean_deg": 11.906310758095966,
+      "precontact_fp10_frames": 0,
+      "zero_force_fp10_frames": 1,
+      "longest_torso_loaded_ge10n_s": 0.14,
+      "peak_own_gpu_mib": 354,
+      "rescue_frames": 2,
+      "peak_rescued": false
+    }
+  ],
+  "limit": "different closed-loop trajectories; selected after masked/oracle results, with frozen model unchanged"
+}

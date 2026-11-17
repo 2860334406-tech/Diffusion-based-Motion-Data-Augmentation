@@ -64,7 +64,12 @@ improves those force estimates on frozen simulation runs. The sustained-push
 oracle policy also fails, and the candidate's dynamic point/normal mapping
 causes joint-limit failures at the stronger tested target. The default remains
 the chest-domain V1 bundle; the linked report contains the paired runs and
-component ablations.
+component ablations. In a fresh 15 N sustained-push check, masked input was
+safe for all eight seeds while the frozen oracle-contact policy failed on all
+eight; simply removing the true force magnitude did not stabilize it.
+On those same seeds, live V1 and shoulder-candidate estimator inputs also
+failed in all eight runs each; the candidate still had one peak miss and one
+precontact false-positive episode.
 
 ## Setup
 

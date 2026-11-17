@@ -1,0 +1,390 @@
+{
+  "manifest_sha256": "d2928b7325b88d99918e146b70362c957ab245e25a3a1600936cd200961cf4b2",
+  "summary": {
+    "masked": {
+      "episodes": 3,
+      "failure_episodes": 0,
+      "failure_codes": {},
+      "strict_valid_episodes": 3,
+      "median_longest_torso_loaded_ge10n_s": 6.8,
+      "median_peak_true_force_n": 19.195724487304688,
+      "complete_first_1s": 3,
+      "median_first_1s_true_impulse_ns": 13.777585849761962,
+      "median_first_1s_root_displacement_m": 0.032551214171191285
+    },
+    "full": {
+      "episodes": 3,
+      "failure_episodes": 3,
+      "failure_codes": {
+        "self_collision": 2,
+        "workspace": 1
+      },
+      "strict_valid_episodes": 0,
+      "median_longest_torso_loaded_ge10n_s": 0.06,
+      "median_peak_true_force_n": 63.740211486816406,
+      "complete_first_1s": 3,
+      "median_first_1s_true_impulse_ns": 3.9252610993385315,
+      "median_first_1s_root_displacement_m": 0.17829004578990623
+    },
+    "active_geometry_no_scalar": {
+      "episodes": 3,
+      "failure_episodes": 3,
+      "failure_codes": {
+        "self_collision": 3
+      },
+      "strict_valid_episodes": 0,
+      "median_longest_torso_loaded_ge10n_s": 0.06,
+      "median_peak_true_force_n": 28.225072860717773,
+      "complete_first_1s": 1,
+      "median_first_1s_true_impulse_ns": 3.230156412124634,
+      "median_first_1s_root_displacement_m": 0.18390711170321056
+    },
+    "active_only": {
+      "episodes": 3,
+      "failure_episodes": 3,
+      "failure_codes": {
+        "workspace": 1,
+        "self_collision": 2
+      },
+      "strict_valid_episodes": 0,
+      "median_longest_torso_loaded_ge10n_s": 0.06,
+      "median_peak_true_force_n": 31.565998077392578,
+      "complete_first_1s": 1,
+      "median_first_1s_true_impulse_ns": 3.8151165509223937,
+      "median_first_1s_root_displacement_m": 0.12265067288317516
+    },
+    "active_force_only": {
+      "episodes": 3,
+      "failure_episodes": 3,
+      "failure_codes": {
+        "torso_tilt": 1,
+        "workspace": 3
+      },
+      "strict_valid_episodes": 0,
+      "median_longest_torso_loaded_ge10n_s": 0.04,
+      "median_peak_true_force_n": 23.610807418823242,
+      "complete_first_1s": 3,
+      "median_first_1s_true_impulse_ns": 2.838155689239502,
+      "median_first_1s_root_displacement_m": 0.11873677628615985
+    },
+    "geometry_only": {
+      "episodes": 3,
+      "failure_episodes": 3,
+      "failure_codes": {
+        "workspace": 2,
+        "self_collision": 1
+      },
+      "strict_valid_episodes": 0,
+      "median_longest_torso_loaded_ge10n_s": 0.06,
+      "median_peak_true_force_n": 35.303279876708984,
+      "complete_first_1s": 3,
+      "median_first_1s_true_impulse_ns": 4.449858986139297,
+      "median_first_1s_root_displacement_m": 0.1765081630988419
+    },
+    "scalar_only": {
+      "episodes": 3,
+      "failure_episodes": 3,
+      "failure_codes": {
+        "workspace": 3
+      },
+      "strict_valid_episodes": 0,
+      "median_longest_torso_loaded_ge10n_s": 0.08,
+      "median_peak_true_force_n": 16.790607452392578,
+      "complete_first_1s": 3,
+      "median_first_1s_true_impulse_ns": 6.536795590221882,
+      "median_first_1s_root_displacement_m": 0.08958201574871126
+    }
+  },
+  "episodes": [
+    {
+      "seed": 269,
+      "mode": "masked",
+      "physical_contact": true,
+      "failures": [],
+      "frames": 600,
+      "longest_torso_loaded_ge10n_s": 3.86,
+      "peak_true_force_n": 46.94541931152344,
+      "first_1s_complete": true,
+      "first_1s_true_impulse_ns": 13.777585849761962,
+      "first_1s_root_displacement_m": 0.032551214171191285
+    },
+    {
+      "seed": 269,
+      "mode": "full",
+      "physical_contact": true,
+      "failures": [
+        "self_collision"
+      ],
+      "frames": 236,
+      "longest_torso_loaded_ge10n_s": 0.04,
+      "peak_true_force_n": 94.94444274902344,
+      "first_1s_complete": true,
+      "first_1s_true_impulse_ns": 3.9656955468654633,
+      "first_1s_root_displacement_m": 0.1703427582306894
+    },
+    {
+      "seed": 269,
+      "mode": "active_geometry_no_scalar",
+      "physical_contact": true,
+      "failures": [
+        "self_collision"
+      ],
+      "frames": 243,
+      "longest_torso_loaded_ge10n_s": 0.06,
+      "peak_true_force_n": 93.49848937988281,
+      "first_1s_complete": true,
+      "first_1s_true_impulse_ns": 3.230156412124634,
+      "first_1s_root_displacement_m": 0.18390711170321056
+    },
+    {
+      "seed": 269,
+      "mode": "active_only",
+      "physical_contact": true,
+      "failures": [
+        "workspace"
+      ],
+      "frames": 261,
+      "longest_torso_loaded_ge10n_s": 0.06,
+      "peak_true_force_n": 31.565998077392578,
+      "first_1s_complete": true,
+      "first_1s_true_impulse_ns": 3.8151165509223937,
+      "first_1s_root_displacement_m": 0.12265067288317516
+    },
+    {
+      "seed": 269,
+      "mode": "active_force_only",
+      "physical_contact": true,
+      "failures": [
+        "torso_tilt",
+        "workspace"
+      ],
+      "frames": 264,
+      "longest_torso_loaded_ge10n_s": 0.06,
+      "peak_true_force_n": 18.389677047729492,
+      "first_1s_complete": true,
+      "first_1s_true_impulse_ns": 2.8085679411888123,
+      "first_1s_root_displacement_m": 0.1297169462033473
+    },
+    {
+      "seed": 269,
+      "mode": "geometry_only",
+      "physical_contact": true,
+      "failures": [
+        "workspace"
+      ],
+      "frames": 256,
+      "longest_torso_loaded_ge10n_s": 0.06,
+      "peak_true_force_n": 35.303279876708984,
+      "first_1s_complete": true,
+      "first_1s_true_impulse_ns": 4.259946414157748,
+      "first_1s_root_displacement_m": 0.1651187972921966
+    },
+    {
+      "seed": 269,
+      "mode": "scalar_only",
+      "physical_contact": true,
+      "failures": [
+        "workspace"
+      ],
+      "frames": 283,
+      "longest_torso_loaded_ge10n_s": 0.08,
+      "peak_true_force_n": 16.790607452392578,
+      "first_1s_complete": true,
+      "first_1s_true_impulse_ns": 6.216795523166657,
+      "first_1s_root_displacement_m": 0.09017496196060494
+    },
+    {
+      "seed": 270,
+      "mode": "masked",
+      "physical_contact": true,
+      "failures": [],
+      "frames": 600,
+      "longest_torso_loaded_ge10n_s": 6.8,
+      "peak_true_force_n": 19.195724487304688,
+      "first_1s_complete": true,
+      "first_1s_true_impulse_ns": 14.057690825462341,
+      "first_1s_root_displacement_m": 0.032412546750617166
+    },
+    {
+      "seed": 270,
+      "mode": "full",
+      "physical_contact": true,
+      "failures": [
+        "self_collision"
+      ],
+      "frames": 310,
+      "longest_torso_loaded_ge10n_s": 0.06,
+      "peak_true_force_n": 63.740211486816406,
+      "first_1s_complete": true,
+      "first_1s_true_impulse_ns": 3.9252610993385315,
+      "first_1s_root_displacement_m": 0.18212779748629332
+    },
+    {
+      "seed": 270,
+      "mode": "active_geometry_no_scalar",
+      "physical_contact": true,
+      "failures": [
+        "self_collision"
+      ],
+      "frames": 260,
+      "longest_torso_loaded_ge10n_s": 0.06,
+      "peak_true_force_n": 27.757200241088867,
+      "first_1s_complete": false,
+      "first_1s_true_impulse_ns": null,
+      "first_1s_root_displacement_m": null
+    },
+    {
+      "seed": 270,
+      "mode": "active_only",
+      "physical_contact": true,
+      "failures": [
+        "self_collision"
+      ],
+      "frames": 267,
+      "longest_torso_loaded_ge10n_s": 0.06,
+      "peak_true_force_n": 26.890300750732422,
+      "first_1s_complete": false,
+      "first_1s_true_impulse_ns": null,
+      "first_1s_root_displacement_m": null
+    },
+    {
+      "seed": 270,
+      "mode": "active_force_only",
+      "physical_contact": true,
+      "failures": [
+        "workspace"
+      ],
+      "frames": 338,
+      "longest_torso_loaded_ge10n_s": 0.04,
+      "peak_true_force_n": 23.610807418823242,
+      "first_1s_complete": true,
+      "first_1s_true_impulse_ns": 2.838155689239502,
+      "first_1s_root_displacement_m": 0.11873677628615985
+    },
+    {
+      "seed": 270,
+      "mode": "geometry_only",
+      "physical_contact": true,
+      "failures": [
+        "workspace"
+      ],
+      "frames": 317,
+      "longest_torso_loaded_ge10n_s": 0.06,
+      "peak_true_force_n": 47.16461944580078,
+      "first_1s_complete": true,
+      "first_1s_true_impulse_ns": 4.920588626861572,
+      "first_1s_root_displacement_m": 0.1765081630988419
+    },
+    {
+      "seed": 270,
+      "mode": "scalar_only",
+      "physical_contact": true,
+      "failures": [
+        "workspace"
+      ],
+      "frames": 344,
+      "longest_torso_loaded_ge10n_s": 0.08,
+      "peak_true_force_n": 22.372121810913086,
+      "first_1s_complete": true,
+      "first_1s_true_impulse_ns": 6.5735712814331055,
+      "first_1s_root_displacement_m": 0.08927811168998205
+    },
+    {
+      "seed": 271,
+      "mode": "masked",
+      "physical_contact": true,
+      "failures": [],
+      "frames": 600,
+      "longest_torso_loaded_ge10n_s": 7.3,
+      "peak_true_force_n": 18.660446166992188,
+      "first_1s_complete": true,
+      "first_1s_true_impulse_ns": 13.697263088226318,
+      "first_1s_root_displacement_m": 0.03288341359370447
+    },
+    {
+      "seed": 271,
+      "mode": "full",
+      "physical_contact": true,
+      "failures": [
+        "workspace"
+      ],
+      "frames": 298,
+      "longest_torso_loaded_ge10n_s": 0.06,
+      "peak_true_force_n": 37.19696807861328,
+      "first_1s_complete": true,
+      "first_1s_true_impulse_ns": 3.0535642433166506,
+      "first_1s_root_displacement_m": 0.17829004578990623
+    },
+    {
+      "seed": 271,
+      "mode": "active_geometry_no_scalar",
+      "physical_contact": true,
+      "failures": [
+        "self_collision"
+      ],
+      "frames": 229,
+      "longest_torso_loaded_ge10n_s": 0.06,
+      "peak_true_force_n": 28.225072860717773,
+      "first_1s_complete": false,
+      "first_1s_true_impulse_ns": null,
+      "first_1s_root_displacement_m": null
+    },
+    {
+      "seed": 271,
+      "mode": "active_only",
+      "physical_contact": true,
+      "failures": [
+        "self_collision"
+      ],
+      "frames": 248,
+      "longest_torso_loaded_ge10n_s": 0.04,
+      "peak_true_force_n": 33.60568618774414,
+      "first_1s_complete": false,
+      "first_1s_true_impulse_ns": null,
+      "first_1s_root_displacement_m": null
+    },
+    {
+      "seed": 271,
+      "mode": "active_force_only",
+      "physical_contact": true,
+      "failures": [
+        "workspace"
+      ],
+      "frames": 306,
+      "longest_torso_loaded_ge10n_s": 0.04,
+      "peak_true_force_n": 42.461082458496094,
+      "first_1s_complete": true,
+      "first_1s_true_impulse_ns": 3.1158641600608825,
+      "first_1s_root_displacement_m": 0.1163856037569988
+    },
+    {
+      "seed": 271,
+      "mode": "geometry_only",
+      "physical_contact": true,
+      "failures": [
+        "self_collision"
+      ],
+      "frames": 292,
+      "longest_torso_loaded_ge10n_s": 0.06,
+      "peak_true_force_n": 30.756742477416992,
+      "first_1s_complete": true,
+      "first_1s_true_impulse_ns": 4.449858986139297,
+      "first_1s_root_displacement_m": 0.19207598289160951
+    },
+    {
+      "seed": 271,
+      "mode": "scalar_only",
+      "physical_contact": true,
+      "failures": [
+        "workspace"
+      ],
+      "frames": 322,
+      "longest_torso_loaded_ge10n_s": 0.08,
+      "peak_true_force_n": 15.595977783203125,
+      "first_1s_complete": true,
+      "first_1s_true_impulse_ns": 6.536795590221882,
+      "first_1s_root_displacement_m": 0.08958201574871126
+    }
+  ],
+  "limit": "selected development seeds, deliberately nonphysical channel combinations; diagnostic only"
+}

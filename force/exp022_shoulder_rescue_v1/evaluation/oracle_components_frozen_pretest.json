@@ -1,0 +1,61 @@
+{
+  "status": "frozen before component-ablation runs",
+  "reason": "gain 0.0 retained true active/direction/point and failed 3/3 despite stable fully masked controls",
+  "seeds": [
+    269,
+    270,
+    271
+  ],
+  "modes": [
+    "active_only",
+    "active_force_only",
+    "geometry_only",
+    "scalar_only"
+  ],
+  "common_cli": [
+    "--pusher-mode",
+    "sustained",
+    "--sphere-radius-m",
+    "0.1",
+    "--sphere-mass-kg",
+    "5",
+    "--target-force-n",
+    "15",
+    "--target-speed-m-s",
+    "0.06",
+    "--follow-speed-m-s",
+    "0.4",
+    "--base-force-gain-m-s-per-n",
+    "0",
+    "--motor-hold-after-contact",
+    "--freeze-push-heading",
+    "--one-way-speed-limit",
+    "--contact-time-constant-s",
+    "0.05",
+    "--max-drive-force-weight-ratio",
+    "0.1",
+    "--max-travel-m",
+    "0.75",
+    "--no-video",
+    "--max-gpu-memory-gib",
+    "4",
+    "--min-free-gpu-gib",
+    "2"
+  ],
+  "intervention": {
+    "active_only": "keep contact-active bits, zero scalar and geometry",
+    "active_force_only": "keep active bits and true force scalar, zero geometry",
+    "geometry_only": "keep true direction and point, zero active bits and scalar",
+    "scalar_only": "keep true force scalar, zero active bits and geometry"
+  },
+  "reference": "gain 1 full oracle and fully masked episodes in force_shift/; gain 0 active+geometry in oracle_scalar_gain/",
+  "evaluator_sha256": "ce0f16668ed70b667af4cf216cf4a7170b3755dab216a1cd3a5657d4e47bea21",
+  "policy_sha256": "82ddfe95ee383cd4cf62c65d6f080a46138ad43fbdd92f19e28d9272ea4e0d33",
+  "primary": [
+    "failure termination",
+    "continuous torso >=10 N duration",
+    "first 1 s true impulse",
+    "root displacement"
+  ],
+  "limit": "selected development seeds and deliberately incomplete actor observations; diagnostic only"
+}
