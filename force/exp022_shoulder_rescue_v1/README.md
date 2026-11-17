@@ -2,6 +2,8 @@
 
 这包记录冻结 EXP-022 胸推 Actor 在持续球头推压下的力估计联调。原 [V1 胸推估计器](../exp022_chest_v1/README.md)在球头从胸前移到右肩或右肘时，常把高峰值力判为无接触；策略输入仍使用固定胸前作用点和法向。这里保留 V1，在高置信度肩部迁移时补一个三维力分支，并给出实验性的肩部接触映射。**当前不替换默认 V1，也不作为已通过卸力验收的策略输入。**
 
+按师兄“先比较真值与估计输入，再决定 PPO，最后联合迭代”的顺序整理的[汇报稿](2026-11-17_给师兄汇报_可复制飞书.md)已嵌入三张图：[同轨迹力跟踪](evaluation/report_01_same_trajectory_force.png)、[15 N 持续闭环](evaluation/report_02_sustained_closed_loop.png)、[Actor 输入偏移](evaluation/report_03_actor_input_shift.png)。图均提供 PNG/PDF；[绘图代码](evaluation/plot_report_figures.py)、[图 1 数据](evaluation/report_seed248_same_trajectory.csv)和[来源清单](evaluation/report_seed248_source.json)一并保留。
+
 ## 模型和接口
 
 模型读取同一控制步的 50 Hz `x930` 和 `tau_hist_10x29`，在 `torso_link` 坐标输出三维合力。肩部分类器只用这两项可观测量构成的 273 维因果特征；训练时的真实接触几何、接触力、未来帧都不参与推理。选定门槛为肩部概率 ≥0.95、V1 力模长 <10 N、补偿分支建议力 ≥10 N；其他力帧保留 V1。肩部作用点是训练集校准的单个常量，法向由可观测特征回归。它仍是单点近似，不是多接触点识别。

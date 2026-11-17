@@ -1,0 +1,14 @@
+{
+  "episode": "seed248_estimated",
+  "source_sha256": "5f30dfc6c621fc4532162bfaf2788cf92da6d600bf0e28d9fc0c0660d531f535",
+  "model_sha256": "c74e7ca92771b17849e4cbf4ddbd2425dff4e10056c0adc4542e9b4de940327c",
+  "v1_saved_replay_max_abs_n": 1.239776611328125e-05,
+  "frames": 259,
+  "first_physical_contact_index": 153,
+  "true_peak_index": 249,
+  "true_peak_n": 94.82840728759766,
+  "v1_at_peak_n": 0.0,
+  "candidate_at_peak_n": 98.24238586425781,
+  "peak_contact_geometries": "robot/right_elbow_yaw_collision;robot/right_shoulder_yaw_collision;robot/torso_collision",
+  "scope": "same saved trajectory, frozen model replay; one illustrative episode"
+}
