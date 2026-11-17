@@ -1,10 +1,14 @@
 # 持续球头任务接着做 PPO 前的接口检查
 
+仓库中的 `policy/chest_speed_gradient_v1/policy.pt` 是第 31,995 次迭代的完整 RSL-RL 检查点，含 Actor、Critic 与优化器状态；Actor / Critic 归一化输入维度分别为 128 / 992。`scripts/train.py` 是 mjlab 训练入口。后续需要在独立任务和输出目录中验证恢复加载，不能直接沿用原事件式任务配置。
+
 ## 目前为什么不能直接续训
 
 EXP-022 C 阶段策略用原始事件式球头训练：推速 0.20 m/s，接触力降至事件阈值并保持后，推手回撤。现有持续推压评估换成 `ForceRegulatedRail`，将 `force_done_ratio` 设为 0，让推手保持施力。原控制器的成功判据仍要求 `filtered_force < force_done`；此时右侧是 0，而滤波接触力非负，因此原 `event_success` 在持续协议下无法成立。253 号真值输入评估中该指标实际为 0。
 
 原任务奖励 `force_unloading_task_reward` 用相邻两步的接触力下降量 `mapped_force_drop`，再与静止奖励混合。持续压力恒定时，该下降项回到中性值 0.5；它没有直接奖励持续 1 秒的低接触力和安全存活。直接拿原任务与原成功率指标续训，无法检验我们现在要的持续卸力目标。后一句是按当前奖励与成功判据代码做的推断，尚未用新 PPO 实验验证。
+
+对应改动入口是 `src/smp/rl/tasks/force_unloading/mdp/controller.py` 中的接触状态与事件成功逻辑、`mdp/terms.py` 中的 `force_unloading_task_reward`、`force_unloading_env_cfg.py` 中的奖励/终止/指标配置，以及 `scripts/evaluate_exp022_sustained_contact.py` 中已验证的 `ForceRegulatedRail` 物理推手。持续任务应另注册任务 ID，并复用这套推手参数；原任务保持可回归。
 
 在标称 15 N 且遮蔽输入能安全持续加载的 269–271 号种子中，真值输入 3/3 失败；单独把真值力大小通道缩到 0、25%、50%、75% 也分别 3/3 失败。随后用独立的 277–284 号种子复核：遮蔽输入 8/8 安全持续加载，真值输入 8/8 失败，力大小清零但保留接触标志/几何输入仍 8/8 失败。这说明仅调整力标量不能让冻结 Actor 稳定。25 N 时完整肩部点+法向候选出现 4/4 关节硬限位，力、点、法向如何进入 Actor 也需要先确定。
 
