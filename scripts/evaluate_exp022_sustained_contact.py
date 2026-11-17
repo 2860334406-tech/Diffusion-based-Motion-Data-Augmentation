@@ -1,8 +1,9 @@
-"""EXP-022 oracle-policy test with a force-regulated physical rail sphere.
+"""EXP-022 closed-loop oracle/estimate test with a physical rail sphere.
 
-The robot policy and contact observation stay frozen. Only the external rail
-actuator changes. A control-step contact label and all four substep collision
-geometries are recorded for acceptance auditing.
+The frozen actor receives either its original contact history or the streamed
+estimator history. The pusher can use the original EXP-022 push/retract rule or
+the sustained-pressure rule. All four physics-substep collision geometries and
+control-step forces are recorded for auditing.
 """
 
 from __future__ import annotations
@@ -12,6 +13,7 @@ import json
 import os
 import subprocess
 from pathlib import Path
+from typing import Literal
 
 import numpy as np
 import torch
@@ -20,7 +22,9 @@ from mjlab.sensor.contact_sensor import ContactMatch, ContactSensorCfg
 from mjlab.utils.lab_api.math import quat_apply_inverse
 
 import evaluate_force_unloading as evaluation
+from smp.force_estimation import load_exp022_chest_estimator
 from smp.force_estimation.exp022_interface import (
+  Exp022ContactAdapter,
   add_force_estimator_observations,
   validate_force_estimator_input,
 )
@@ -279,10 +283,13 @@ def main(
   freeze_push_heading: bool = False,
   one_way_speed_limit: bool = False,
   mask_actor_rail_contact: bool = False,
+  actor_contact_source: Literal["oracle", "estimated"] = "oracle",
+  shadow_estimator: bool = False,
   actor_contact_gain: float = 1.0,
   capture_shadow_inputs: bool = False,
   contact_time_constant_s: float = 0.01,
   kinematic_probe: bool = False,
+  pusher_mode: Literal["sustained", "original"] = "sustained",
   max_gpu_memory_gib: float = 30.0,
   min_free_gpu_gib: float = 35.0,
 ) -> None:
@@ -296,6 +303,19 @@ def main(
     or target_speed_m_s <= 0
   ):
     raise ValueError("Invalid force-regulator geometry or target")
+  if pusher_mode == "original" and kinematic_probe:
+    raise ValueError("Original pusher cannot be combined with the kinematic probe")
+  if actor_contact_source == "estimated" and (
+    mask_actor_rail_contact or actor_contact_gain != 1.0
+  ):
+    raise ValueError("Estimated contact input requires unmasked unit actor gain")
+  if shadow_estimator or actor_contact_source == "estimated":
+    capture_shadow_inputs = True
+  estimator = (
+    load_exp022_chest_estimator()
+    if shadow_estimator or actor_contact_source == "estimated"
+    else None
+  )
   free, total = torch.cuda.mem_get_info(0)
   if free < min_free_gpu_gib * 1024**3:
     raise RuntimeError(f"GPU has only {free / 1024**3:.1f} GiB free")
@@ -342,6 +362,9 @@ def main(
     "substeps": [],
     "capture": False,
     "shadow_steps": [],
+    "estimator": estimator,
+    "adapter": None,
+    "initial_observation_seen": False,
   }
 
   def load_cfg(*args, **kwargs):
@@ -351,7 +374,7 @@ def main(
       sphere_mass=sphere_mass_kg,
       max_travel=max_travel_m,
       max_force_weight_ratio=max_drive_force_weight_ratio,
-      force_done_ratio=0.0,
+      force_done_ratio=0.03 if pusher_mode == "original" else 0.0,
     )
     env_cfg = g1_force_unloading_smp_env_cfg(play=True, rail_cfg=rail_cfg)
     if contact_time_constant_s != 0.01 or rail_joint_damping_n_s_per_m > 0:
@@ -370,10 +393,11 @@ def main(
         return spec
 
       entity.spec_fn = compliant_spec
-    env_cfg.events["rail_pusher_controller"].func = (
-      KinematicForceProbe if kinematic_probe else ForceRegulatedRail
-    )
-    if capture_shadow_inputs:
+    if pusher_mode == "sustained":
+      env_cfg.events["rail_pusher_controller"].func = (
+        KinematicForceProbe if kinematic_probe else ForceRegulatedRail
+      )
+    if capture_shadow_inputs or estimator is not None:
       add_force_estimator_observations(env_cfg)
     env_cfg.scene.sensors = (env_cfg.scene.sensors or ()) + (
       ContactSensorCfg(
@@ -415,17 +439,49 @@ def main(
     return env
 
   class RecordingWrapper(original_wrapper):
-    @staticmethod
-    def _scale_actor_contact(result):
+    def _apply_actor_contact(self, result, prediction=None):
       actor = result["actor"]
       if actor.shape[-1] != 128:
         raise RuntimeError(f"Expected 128D EXP-022 actor input, got {actor.shape}")
-      actor[:, -32:] *= effective_actor_contact_gain
+      if actor_contact_source == "oracle":
+        actor[:, -32:] *= effective_actor_contact_gain
+      elif prediction is None:
+        actor[:, -32:] = 0
+      else:
+        adapter = state["adapter"]
+        env = state["env"]
+        robot = env.scene["robot"]
+        torso_id = robot.body_names.index("torso_link")
+        device = actor.device
+        normal = torch.as_tensor(
+          prediction["policy_normal_force_body_n"], device=device
+        ).reshape(1, 3)
+        point = torch.as_tensor(
+          prediction["policy_point_body_m"], device=device
+        ).reshape(1, 3)
+        adapter.step(
+          normal,
+          point,
+          torso_quat_w=robot.data.body_link_quat_w[:, torso_id],
+          torso_pos_w=robot.data.body_link_pos_w[:, torso_id],
+          root_quat_w=robot.data.root_link_quat_w,
+          root_pos_w=robot.data.root_link_pos_w,
+        )
+        actor[:, -32:] = adapter.history
+        if not torch.allclose(actor[:, -8:], adapter.history[:, -8:], atol=1e-6):
+          raise RuntimeError("Estimated actor history was not installed")
       return result
 
     def get_observations(self):
       result = super().get_observations()
-      return self._scale_actor_contact(result)
+      if estimator is not None and not state["initial_observation_seen"]:
+        estimator.reset()
+        state["adapter"] = Exp022ContactAdapter.from_controller(
+          state["env"]._rail_controller
+        )
+        state["adapter"].reset()
+        state["initial_observation_seen"] = True
+      return self._apply_actor_contact(result)
 
     def step(self, actions):
       state["substeps"].clear()
@@ -476,6 +532,12 @@ def main(
             .cpu()
             .numpy()
             .copy(),
+            "actor_base_obs": observation["actor"][0, :-32]
+            .detach()
+            .cpu()
+            .numpy()
+            .copy(),
+            "action": actions[0].detach().cpu().numpy().copy(),
             "torso_quat_wxyz": robot.data.body_link_quat_w[0, torso_id]
             .detach()
             .cpu()
@@ -496,6 +558,17 @@ def main(
             "contact_geometries": ";".join(geometries),
           }
         )
+      prediction = None
+      if estimator is not None:
+        observation = result[0]
+        validate_force_estimator_input(env, observation)
+        prediction = estimator.step(
+          observation["force_estimator_x"][0].detach().cpu().numpy(),
+          observation["force_estimator_tau"][0].detach().cpu().numpy(),
+        )
+      contact_history = controller.contact_sensor.data.force_history
+      measured_normal = contact_history[..., 0].abs().sum(dim=1).mean(dim=-1)
+      rail_dof = int(controller.pusher.indexing.joint_v_adr[0])
       state["rows"].append(
         {
           "step": len(state["rows"]) + 1,
@@ -504,9 +577,9 @@ def main(
           "force_y_n": float(body[1]),
           "force_z_n": float(body[2]),
           "force_resultant_n": float(torch.linalg.vector_norm(body)),
-          "normal_mean_n": float(controller.measured_normal_n[0]),
+          "normal_mean_n": float(measured_normal[0]),
           "normal_peak_5ms_n": float(controller.raw_force_peak[0]),
-          "motor_effort_n": float(controller.commanded_effort_n[0]),
+          "motor_effort_n": float(env.sim.data.qfrc_applied[0, rail_dof]),
           "pusher_joint_pos_m": float(controller.pusher.data.joint_pos[0, 0]),
           "pusher_joint_vel_m_s": float(controller.pusher.data.joint_vel[0, 0]),
           "phase": int(controller.phase[0]),
@@ -523,7 +596,34 @@ def main(
           state["peak_gpu_mib"] = max(state["peak_gpu_mib"], own)
           if own > max_gpu_memory_gib * 1024:
             raise RuntimeError(f"Own GPU memory {own / 1024:.2f} GiB exceeds cap")
-      self._scale_actor_contact(result[0])
+      self._apply_actor_contact(result[0], prediction)
+      if prediction is not None:
+        state["rows"][-1].update(
+          estimated_force_x_n=float(prediction["force_body_n"][0]),
+          estimated_force_y_n=float(prediction["force_body_n"][1]),
+          estimated_force_z_n=float(prediction["force_body_n"][2]),
+          estimated_force_resultant_n=float(np.linalg.norm(prediction["force_body_n"])),
+          estimated_contact_probability=float(prediction["contact_probability"]),
+          actor_contact_active=float(result[0]["actor"][0, -8]),
+          actor_contact_force_ratio=float(result[0]["actor"][0, -7]),
+          oracle_contact_active=float(controller.contact_obs[0, 0]),
+          oracle_contact_force_ratio=float(controller.contact_obs[0, 1]),
+          actor_contact_frame_l2=float(
+            torch.linalg.vector_norm(
+              result[0]["actor"][0, -8:] - controller.contact_obs[0]
+            )
+          ),
+        )
+        if capture_shadow_inputs:
+          state["shadow_steps"][-1].update(
+            estimated_force_body_n=prediction["force_body_n"].copy(),
+            estimated_contact_probability=np.float32(prediction["contact_probability"]),
+            actor_contact_history=result[0]["actor"][0, -32:]
+            .detach()
+            .cpu()
+            .numpy()
+            .copy(),
+          )
       return result
 
   evaluation.load_env_cfg = load_cfg
@@ -562,11 +662,17 @@ def main(
   audit = {
     "protocol": f"EXP-022 frozen policy (actor contact gain {effective_actor_contact_gain}); physical sphere {sphere_radius_m} m / {sphere_mass_kg} kg; "
     + (
-      "kinematic force-controlled tracking probe"
-      if kinematic_probe
-      else "low-speed rail approach; "
-      + ("rail-motor force hold" if motor_hold_after_contact else "base force feedback")
-      + ("; fixed push heading" if freeze_push_heading else "; moving heading")
+      "original EXP-022 rail push/retract"
+      if pusher_mode == "original"
+      else (
+        "kinematic force-controlled tracking probe"
+        if kinematic_probe
+        else "low-speed rail approach; "
+        + (
+          "rail-motor force hold" if motor_hold_after_contact else "base force feedback"
+        )
+        + ("; fixed push heading" if freeze_push_heading else "; moving heading")
+      )
     ),
     "target_force_n": target_force_n,
     "robot_weight_n": float(state["env"]._rail_controller.weight),
@@ -586,10 +692,13 @@ def main(
     "freeze_push_heading": freeze_push_heading,
     "one_way_speed_limit": one_way_speed_limit,
     "mask_actor_rail_contact": mask_actor_rail_contact,
+    "actor_contact_source": actor_contact_source,
+    "shadow_estimator": estimator is not None,
     "actor_contact_gain": effective_actor_contact_gain,
     "capture_shadow_inputs": capture_shadow_inputs,
     "contact_time_constant_s": contact_time_constant_s,
     "kinematic_probe": kinematic_probe,
+    "pusher_mode": pusher_mode,
     "frames": len(rows),
     "contact_frames": int(contact.sum()),
     "loaded_ge10n_frames": int(loaded.sum()),

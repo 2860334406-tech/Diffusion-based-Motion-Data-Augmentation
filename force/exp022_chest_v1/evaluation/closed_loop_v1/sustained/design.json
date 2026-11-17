@@ -1,0 +1,26 @@
+{
+  "purpose": "Paired frozen EXP-022 actor rollout with oracle versus estimated contact input",
+  "repo_parent_commit": "cb98705763b9437a1a6256e87e89ad81534819ab",
+  "policy_sha256": "82ddfe95ee383cd4cf62c65d6f080a46138ad43fbdd92f19e28d9272ea4e0d33",
+  "eval_config_sha256": "0ae690af3e70fc6a24724544f733938eddca47e108c1432d54f0e6b0bd24546a",
+  "estimator_sha256": "025ab758dee389eae33e7b9fe97419aba7b9d271934e04d513273b9abbf286df",
+  "mapping_sha256": "22f7e8c366b214fb3bafacb07464dcb57f95820c9c7e6d5b49cd8b204ef5160a",
+  "seed_range": [181, 188],
+  "modes": ["oracle", "estimated"],
+  "condition_rule": "index=(seed-181)%8; force=[10,20,30,40][index%4] N; ball_mass=[1,5][index//4] kg",
+  "pusher": {
+    "sphere_radius_m": 0.1,
+    "max_drive_force_weight_ratio": 0.1,
+    "target_speed_m_s": 0.06,
+    "follow_speed_m_s": 0.4,
+    "base_force_gain_m_s_per_n": 0.0,
+    "motor_hold_after_contact": true,
+    "freeze_push_heading": true,
+    "one_way_speed_limit": true,
+    "contact_time_constant_s": 0.05
+  },
+  "actor": "EXP-022 checkpoint frozen; only the actor contact-history 32D term changes",
+  "estimator": "same model shadows both modes; its output drives only estimated mode",
+  "primary_comparison": "paired first-contact timing, contact duration and impulse, peak force, failure termination, and precontact trajectory parity",
+  "scope": "simulation diagnostic, one seed per force/mass condition; no PPO training"
+}

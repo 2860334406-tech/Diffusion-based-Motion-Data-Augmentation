@@ -1,6 +1,6 @@
 {
   "name": "EXP022 chest force and actor mapping v1",
-  "status": "accepted for offline mainline step-1 actor-input comparison on fresh simulation runs",
+  "status": "offline actor-input comparison passed; paired closed-loop diagnostic found precontact false-force risk",
   "model_sha256": "025ab758dee389eae33e7b9fe97419aba7b9d271934e04d513273b9abbf286df",
   "mapping_sha256": "22f7e8c366b214fb3bafacb07464dcb57f95820c9c7e6d5b49cd8b204ef5160a",
   "feature_code_sha256": "94c77b5394550603729538c2ab792de300e4406003e7f03dfd43b4c239863b10",
@@ -9,8 +9,9 @@
   "locked_test": "evaluation/v2_test_metrics.json",
   "force_comparison": "evaluation/v2_force_locked_audit.json",
   "actor_input_comparison": "evaluation/v2_actor_input_locked_audit.json",
+  "closed_loop_diagnostic": "evaluation/closed_loop_v1/README.md",
   "input": "50 Hz observable-only term-major x [930] and aligned joint actuator tau_hist [10,29], one episode per instance",
   "output": "3D resultant force in torso_link N, contact probability, and chest-specific policy normal/point in torso_link",
-  "scope": "EXP-022 frozen policy, front chest sphere pusher, 1/5 kg sphere, 10/20/30/40 N command; offline oracle/masked trajectories only",
-  "limitations": "No estimated-input closed-loop rollout, PPO fine-tuning, arbitrary contact point, hardware sensor validation, or unloading claim"
+  "scope": "EXP-022 frozen policy, front chest sphere pusher; offline 1/5 kg and 10/20/30/40 N command tests plus eight paired original-protocol closed-loop simulation seeds and eight sustained-pressure stress pairs",
+  "limitations": "Closed-loop seed 181 had a 61.08 N precontact false estimate and no eventual physical contact in estimated-input mode. Loaded-force intervals were too short for sustained-unloading claims. No PPO fine-tuning, arbitrary contact point, hardware sensor validation, or multi-contact prediction."
 }

@@ -1,0 +1,37 @@
+{
+  "design": {
+    "purpose": "Paired frozen EXP-022 actor rollout under the exact original push/retract completion rule",
+    "seed_range": [
+      181,
+      188
+    ],
+    "modes": [
+      "oracle",
+      "estimated"
+    ],
+    "policy": "policy/chest_speed_gradient_v1/policy.pt",
+    "pusher_mode": "original",
+    "sphere_radius_m": 0.1,
+    "sphere_mass_kg": 5,
+    "max_drive_force_weight_ratio": 0.15,
+    "max_travel_m": 0.375,
+    "reference_speed_m_s": 0.2,
+    "force_done_ratio": 0.03,
+    "contact_time_constant_s": 0.01,
+    "supersedes": "exp022_original_closed_loop_v1 had force_done_ratio=0 and cannot test the original push/retract success rule",
+    "scope": "Eight paired simulation seeds, no PPO; original pusher has short loaded contact"
+  },
+  "pairs": 8,
+  "failure_oracle": 0,
+  "failure_estimated": 2,
+  "event_success_oracle": 8,
+  "event_success_estimated": 7,
+  "no_contact_oracle": 0,
+  "no_contact_estimated": 1,
+  "estimated_longer_loaded": 0,
+  "estimated_shorter_loaded": 2,
+  "estimated_equal_loaded": 6,
+  "max_precontact_action_abs": 4.025811195373535,
+  "max_first_contact_step_diff": 0,
+  "max_gpu_mib": 354
+}
