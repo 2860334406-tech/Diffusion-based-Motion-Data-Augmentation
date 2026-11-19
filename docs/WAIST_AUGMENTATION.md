@@ -52,7 +52,37 @@ uv sync          # 或 pip install -e .
 
 **在无显示器的服务器上**注意：`scripts/csv_to_npz.py` 需要 EGL 渲染。本方案用 `export_waist_aug_windows.py`（纯 `mj_forward`，不依赖渲染）替代，专门适配无 EGL 环境。
 
-### 3.2 数据准备
+### 3.2 数据获取
+
+三个数据包在仓库的 `v1.0-data` Release 里下载：
+
+| 包 | 大小 | 内容 | 解压到 |
+|---|---:|---|---|
+| `waist_aug_real.tar.gz` | 8.3 MB | 27 条真实采集（原始 + 骨盆受限） | `.` |
+| `waist_aug_anchors.tar.gz` | 158 MB | 1064 条 IK 验收锚点 | `logs/reproduction/waist_aug_v1/` |
+| `waist_aug_data.tar.gz` | 36 MB | 95 条生成轨迹 + 7790 窗口 | `logs/reproduction/waist_aug_v1/` |
+
+```bash
+mkdir -p logs/reproduction/waist_aug_v1
+tar xzf waist_aug_real.tar.gz -C .
+tar xzf waist_aug_anchors.tar.gz -C logs/reproduction/waist_aug_v1/
+tar xzf waist_aug_data.tar.gz -C logs/reproduction/waist_aug_v1/
+```
+
+解压后目录结构：
+
+```
+data/real/                  27 条原始真实采集（30 fps，36 列）
+data/real_pelvis_capped/    27 条骨盆受限版本（50 fps）
+logs/reproduction/waist_aug_v1/
+  anchors/clips/accepted/   1064 条锚点
+  humanlike_full/           95 条生成轨迹（最终交付）
+  windows_humanlike/        7790 个 (10,59) 窗口
+```
+
+锚点也可用 `scripts/gen_waist_aug_anchors.py` 从零生成（16 核约 20 分钟），不必下载。**真实采集无法重新生成**——它们来自原始视频采集。
+
+### 3.3 数据准备（自备数据时）
 
 **真实采集**：36 列无表头 CSV（`root xyz(3) + quat xyzw(4) + 29 关节角`），放到 `data/real/`，文件名以 `P0` 开头。
 
@@ -67,7 +97,7 @@ PYTHONPATH=src python scripts/retarget_real_with_pelvis_cap.py \
 
 这一步会把真实数据的骨盆转动（典型 30°）压到 3° 以内，被截掉的部分**转移到腰部**——得到"真人风格但物理可行"的样本。
 
-### 3.3 生成仿真锚点（可选，仓库不附带）
+### 3.4 生成仿真锚点（可选，仓库不附带）
 
 锚点是物理合法性训练的基底。若没有现成的，用：
 
@@ -78,7 +108,7 @@ PYTHONPATH=src python scripts/gen_waist_aug_anchors.py \
 
 1200 个参数组合（站距 × 膝屈曲 × 腰幅度 × 起转速度 × 肩外展），MuJoCo 验收后约 85% 通过，16 核约 20 分钟。
 
-### 3.4 训练
+### 3.5 训练
 
 ```bash
 PYTHONPATH=src python scripts/train_waist_aug.py \
@@ -89,7 +119,7 @@ PYTHONPATH=src python scripts/train_waist_aug.py \
 
 单张 A100 约 19 分钟，最终 val loss ≈ 0.125。
 
-### 3.5 采样 + 验证
+### 3.6 采样 + 验证
 
 ```bash
 PYTHONPATH=src python scripts/sample_waist_aug.py \
@@ -106,7 +136,7 @@ PYTHONPATH=src python scripts/sample_waist_aug.py \
 
 产物：`<out>/clips/{accepted,rejected}/train/<condition>/*.csv`，36 列、50 Hz，与仓库现有 G1 数据格式一致。
 
-### 3.6 导出下游格式
+### 3.7 导出下游格式
 
 ```bash
 PYTHONPATH=src python scripts/export_waist_aug_windows.py \

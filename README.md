@@ -78,6 +78,29 @@ waist-twist captures into a wide, physically-validated, human-like motion corpus
 It re-uses this repo's IK retargeter for physical feasibility and its
 `(N,10,59)` window format for downstream prior training.
 
+### Data
+
+Three archives ship with the [`v1.0-data` release](../../releases/tag/v1.0-data):
+
+| Archive | Size | Contents | Extract to |
+|---|---:|---|---|
+| `waist_aug_real.tar.gz` | 8.3 MB | 27 real captures, raw + pelvis-capped | `.` (creates `data/real`, `data/real_pelvis_capped`) |
+| `waist_aug_anchors.tar.gz` | 158 MB | 1064 IK-validated procedural anchors | `logs/reproduction/waist_aug_v1/` |
+| `waist_aug_data.tar.gz` | 36 MB | 95 generated trajectories + 7790 windows | `logs/reproduction/waist_aug_v1/` |
+
+```bash
+mkdir -p logs/reproduction/waist_aug_v1
+tar xzf waist_aug_real.tar.gz -C .
+tar xzf waist_aug_anchors.tar.gz -C logs/reproduction/waist_aug_v1/
+tar xzf waist_aug_data.tar.gz -C logs/reproduction/waist_aug_v1/
+```
+
+The anchors can also be regenerated from scratch instead of downloaded
+(`scripts/gen_waist_aug_anchors.py`, ~20 min on 16 cores). The real captures
+cannot be regenerated — they come from the original video takes.
+
+### Run
+
 ```bash
 # see docs/WAIST_AUGMENTATION.md for the full walkthrough
 PYTHONPATH=src python scripts/retarget_real_with_pelvis_cap.py   # make real data physical
