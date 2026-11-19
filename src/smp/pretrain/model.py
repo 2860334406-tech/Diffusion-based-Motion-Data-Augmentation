@@ -183,14 +183,20 @@ class DiffusionDenoiser(nn.Module):
     dropout: float = 0.0,
     head_dim: int | None = None,
     num_conditions: int = 0,
+    condition_dim: int = 0,
   ) -> None:
     super().__init__()
     self.feature_dim = feature_dim
     self.window_size = window_size
     if num_conditions < 0:
       raise ValueError("num_conditions must be non-negative")
+    if condition_dim < 0:
+      raise ValueError("condition_dim must be non-negative")
+    if condition_dim and num_conditions:
+      raise ValueError("Use either discrete num_conditions or continuous condition_dim")
     self.num_conditions = num_conditions
     self.null_condition_id = num_conditions
+    self.condition_dim = condition_dim
 
     if head_dim is None:
       if d_model % nhead != 0:
@@ -216,6 +222,17 @@ class DiffusionDenoiser(nn.Module):
     self.condition_embedding = (
       nn.Embedding(num_conditions + 1, self.inner_dim) if num_conditions else None
     )
+    if condition_dim:
+      self.condition_mlp = nn.Sequential(
+        nn.Linear(condition_dim, self.inner_dim),
+        nn.SiLU(),
+        nn.Linear(self.inner_dim, self.inner_dim),
+      )
+      # Learned embedding used for classifier-free guidance (the "null" branch).
+      self.null_condition = nn.Parameter(torch.zeros(self.inner_dim))
+    else:
+      self.condition_mlp = None
+      self.register_parameter("null_condition", None)
     self.sequence_pos_encoder = _SinusoidalPositionalEmbedding(
       self.inner_dim, max_seq_length=max(window_size, 32)
     )
@@ -236,16 +253,34 @@ class DiffusionDenoiser(nn.Module):
   def forward(
     self, x_t: torch.Tensor, t: torch.Tensor,
     condition_id: torch.Tensor | None = None,
+    condition: torch.Tensor | None = None,
   ) -> torch.Tensor:
     condition_embedding = None
-    if self.condition_embedding is not None:
+    if self.condition_mlp is not None:
+      if condition_id is not None:
+        raise ValueError("Continuous-condition model does not accept condition_id")
+      batch = x_t.shape[0]
+      if condition is None:
+        condition_embedding = self.null_condition.unsqueeze(0).expand(batch, -1)
+      else:
+        if condition.shape != (batch, self.condition_dim):
+          raise ValueError(
+            f"condition must be ({batch}, {self.condition_dim}); got {tuple(condition.shape)}"
+          )
+        condition_embedding = self.condition_mlp(condition)
+    elif self.condition_embedding is not None:
+      if condition is not None:
+        raise ValueError("Discrete-condition model does not accept continuous condition")
       if condition_id is None:
         raise ValueError("Conditional model requires condition_id; NULL is not stand")
       if condition_id.shape != t.shape or condition_id.dtype != torch.long:
         raise ValueError("condition_id must be a long tensor of shape (B,)")
       condition_embedding = self.condition_embedding(condition_id)
-    elif condition_id is not None:
-      raise ValueError("Unconditional model does not accept condition_id")
+    else:
+      if condition_id is not None:
+        raise ValueError("Unconditional model does not accept condition_id")
+      if condition is not None:
+        raise ValueError("Unconditional model does not accept condition")
     h = x_t.transpose(1, 2)
     h = self.preprocess_conv(h) + h
     h = h.transpose(1, 2)

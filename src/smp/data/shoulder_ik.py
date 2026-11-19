@@ -105,6 +105,19 @@ class ClipSpec:
   target_mean_yaw_speed_deg_s: float = 0.0
   yaw_min_deg: float = YAW_MIN_DEG
   yaw_max_deg: float = YAW_MAX_DEG
+  # Extended stance / arm parameters for trajectory-level augmentation. All
+  # default to the historical behaviour so existing pipelines are unchanged.
+  shoulder_roll_rad: float = 0.20
+  shoulder_yaw_rad: float = 0.0
+  shoulder_pitch_rad: float = 0.20
+  elbow_rad: float = 0.60
+  wrist_roll_rad: float = 0.0
+  wrist_pitch_rad: float = 0.0
+  wrist_yaw_rad: float = 0.0
+  hip_yaw_rad: float = 0.0
+  waist_pitch_rad: float = 0.0
+  waist_roll_rad: float = 0.0
+  toe_out_rad: float = 0.0
 
   @property
   def condition(self) -> str:
@@ -590,12 +603,24 @@ class ShoulderIkGenerator:
       _set_joint(target_q, model, f"{side}_hip_pitch_joint", -0.46 * knee)
       _set_joint(target_q, model, f"{side}_ankle_pitch_joint", -0.54 * knee)
     a0, a1, a2, a3 = spec.arm_variant
-    _set_joint(target_q, model, "left_shoulder_pitch_joint", 0.20 + 0.04 * a0)
-    _set_joint(target_q, model, "right_shoulder_pitch_joint", 0.20 + 0.04 * a1)
-    _set_joint(target_q, model, "left_shoulder_roll_joint", 0.20 + 0.03 * a2)
-    _set_joint(target_q, model, "right_shoulder_roll_joint", -0.20 - 0.03 * a2)
-    _set_joint(target_q, model, "left_elbow_joint", 0.60 + 0.08 * a3)
-    _set_joint(target_q, model, "right_elbow_joint", 0.60 - 0.08 * a3)
+    _set_joint(target_q, model, "left_shoulder_pitch_joint", spec.shoulder_pitch_rad + 0.04 * a0)
+    _set_joint(target_q, model, "right_shoulder_pitch_joint", spec.shoulder_pitch_rad + 0.04 * a1)
+    _set_joint(target_q, model, "left_shoulder_roll_joint", spec.shoulder_roll_rad + 0.03 * a2)
+    _set_joint(target_q, model, "right_shoulder_roll_joint", -spec.shoulder_roll_rad - 0.03 * a2)
+    _set_joint(target_q, model, "left_elbow_joint", spec.elbow_rad + 0.08 * a3)
+    _set_joint(target_q, model, "right_elbow_joint", spec.elbow_rad - 0.08 * a3)
+    _set_joint(target_q, model, "left_shoulder_yaw_joint", spec.shoulder_yaw_rad + 0.05 * a0)
+    _set_joint(target_q, model, "right_shoulder_yaw_joint", -spec.shoulder_yaw_rad - 0.05 * a1)
+    _set_joint(target_q, model, "left_wrist_roll_joint", spec.wrist_roll_rad)
+    _set_joint(target_q, model, "right_wrist_roll_joint", -spec.wrist_roll_rad)
+    _set_joint(target_q, model, "left_wrist_pitch_joint", spec.wrist_pitch_rad)
+    _set_joint(target_q, model, "right_wrist_pitch_joint", spec.wrist_pitch_rad)
+    _set_joint(target_q, model, "left_wrist_yaw_joint", spec.wrist_yaw_rad)
+    _set_joint(target_q, model, "right_wrist_yaw_joint", -spec.wrist_yaw_rad)
+    _set_joint(target_q, model, "left_hip_yaw_joint", spec.hip_yaw_rad)
+    _set_joint(target_q, model, "right_hip_yaw_joint", spec.hip_yaw_rad)
+    _set_joint(target_q, model, "waist_pitch_joint", spec.waist_pitch_rad)
+    _set_joint(target_q, model, "waist_roll_joint", spec.waist_roll_rad)
 
     left = mink.FrameTask("left_ankle_roll_link", "body", 20.0, 10.0, lm_damping=1.0)
     right = mink.FrameTask("right_ankle_roll_link", "body", 20.0, 10.0, lm_damping=1.0)
@@ -613,8 +638,8 @@ class ShoulderIkGenerator:
     left_pos[1], right_pos[1] = spec.stance_width_m / 2, -spec.stance_width_m / 2
     left_pos[2] -= 0.004
     right_pos[2] -= 0.004
-    left.set_target(_target_pose(left_start, left_pos))
-    right.set_target(_target_pose(right_start, right_pos))
+    left.set_target(_target_pose(left_start, left_pos, yaw=spec.toe_out_rad))
+    right.set_target(_target_pose(right_start, right_pos, yaw=-spec.toe_out_rad))
 
     pelvis = mink.FrameTask(
       "pelvis",
