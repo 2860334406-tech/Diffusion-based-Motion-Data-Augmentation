@@ -88,7 +88,11 @@ class Config:
   terminal_hold_frames: int = 50
   terminal_blend_frames: int = 50
   terminal_policy: str = "median_pre_hold_reference_then_quintic_settle"
-  pelvis_yaw_limit: None = None
+  pelvis_yaw_limit: float | None = None
+  # Augmented clips are synthesised from a seed and may not contain a clean
+  # neutral-onset-hold structure. When True, fall back to a fixed onset instead
+  # of rejecting the clip (existing data production keeps the strict default).
+  allow_onset_fallback: bool = False
   minimum_waist_amplitude: None = None
 
 
@@ -284,12 +288,23 @@ def load_source(
     torso_delta, cfg.smoothing_frames, cfg.smoothing_order, axis=0
   )
   pelvis_delta = stable_terminal_target(pelvis_delta, cfg)
+  # Cap pelvic yaw so the retargeted motion cannot "turn the whole body" instead
+  # of twisting at the waist. The torso target is untouched, so any capped pelvis
+  # rotation is transferred into the relative waist angle.
+  if cfg.pelvis_yaw_limit is not None:
+    lim = float(cfg.pelvis_yaw_limit)
+    pelvis_delta[:, 2] = np.clip(pelvis_delta[:, 2], -lim, lim)
   torso_delta = stable_terminal_target(torso_delta, cfg)
-  onset = (
-    0
-    if metadata["condition_id"] == 0
-    else detect_onset(torso_yaw * (1 if metadata["condition_id"] == 1 else -1), cfg)
-  )
+  try:
+    onset = (
+      0
+      if metadata["condition_id"] == 0
+      else detect_onset(torso_yaw * (1 if metadata["condition_id"] == 1 else -1), cfg)
+    )
+  except ValueError:
+    if not cfg.allow_onset_fallback:
+      raise
+    onset = min(FPS, max(1, len(torso_yaw) // 3))
   return Source(
     metadata,
     item["identity"],
@@ -403,8 +418,11 @@ class PersonalRetargeter(ShoulderIkGenerator):
       collision_limit(model, self.cfg.collision_clearance_m),
     ]
 
-  def reference(self, source: Source, attempt: int):
+  def reference(self, source: Source, attempt: int, overrides: dict | None = None):
     width, knee = STANCES[attempt]
+    ov = overrides or {}
+    width = float(ov.get("stance_width_m", width))
+    knee = float(ov.get("knee_flexion_rad", knee))
     digest = hashlib.sha256(
       f"{self.cfg.seed}:{source.clip_id}:{attempt}".encode()
     ).digest()
@@ -426,6 +444,15 @@ class PersonalRetargeter(ShoulderIkGenerator):
       knee,
       tuple(float(x) for x in rng.uniform(-1, 1, 4)),
       0.0,
+      # Optional posture overrides (used by data augmentation to preserve the
+      # generated arm/knee intent instead of the fixed personal-retarget stance).
+      shoulder_roll_rad=float(ov.get("shoulder_roll_rad", 0.20)),
+      shoulder_yaw_rad=float(ov.get("shoulder_yaw_rad", 0.0)),
+      shoulder_pitch_rad=float(ov.get("shoulder_pitch_rad", 0.20)),
+      elbow_rad=float(ov.get("elbow_rad", 0.60)),
+      wrist_roll_rad=float(ov.get("wrist_roll_rad", 0.0)),
+      wrist_pitch_rad=float(ov.get("wrist_pitch_rad", 0.0)),
+      wrist_yaw_rad=float(ov.get("wrist_yaw_rad", 0.0)),
     )
     configuration, left, right, pelvis, posture, com, limits = (
       self._stand_configuration(spec)

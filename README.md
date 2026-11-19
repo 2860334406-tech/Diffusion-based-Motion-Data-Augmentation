@@ -71,6 +71,26 @@ On those same seeds, live V1 and shoulder-candidate estimator inputs also
 failed in all eight runs each; the candidate still had one peak miss and one
 precontact false-positive episode.
 
+## Motion data augmentation (waist twist)
+
+A trajectory-level conditional diffusion pipeline that expands a small set of
+waist-twist captures into a wide, physically-validated, human-like motion corpus.
+It re-uses this repo's IK retargeter for physical feasibility and its
+`(N,10,59)` window format for downstream prior training.
+
+```bash
+# see docs/WAIST_AUGMENTATION.md for the full walkthrough
+PYTHONPATH=src python scripts/retarget_real_with_pelvis_cap.py   # make real data physical
+PYTHONPATH=src python scripts/train_waist_aug.py --cfg.device cuda
+PYTHONPATH=src python scripts/sample_waist_aug.py --cfg.ckpt <ckpt>
+PYTHONPATH=src python scripts/export_waist_aug_windows.py
+```
+
+Measured on 27 real captures: 105/108 generated trajectories pass every physical
+gate, and generated motion lands 0.074 rad from the real captures (vs 0.178 for
+the anchor-only baseline). Full method, design rationale and failure-mode table:
+**[docs/WAIST_AUGMENTATION.md](docs/WAIST_AUGMENTATION.md)**.
+
 ## Setup
 
 [`uv`](https://docs.astral.sh/uv/) is the canonical package manager; dependencies
